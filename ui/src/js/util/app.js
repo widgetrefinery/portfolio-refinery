@@ -13,6 +13,9 @@ define(['jquery', 'knockout'], function ($, ko) {
 				}
 				clazz[key] = attr;
 			});
+			//IE skips the constructor attribute so we explicitly wire it up here
+			classDef.constructor.supr = parentClass.prototype.constructor;
+			clazz.constructor = classDef.constructor;
 			clazz.supr = function () {
 				return arguments.callee.caller.supr.apply(this, arguments);
 			};
@@ -55,8 +58,8 @@ define(['jquery', 'knockout'], function ($, ko) {
 				complete: function () {
 					self.setBusy(false);
 				},
-				error:    function (xhr, status) {
-					eventBus.fire("error", [xhr, status]);
+				error:    function (xhr) {
+					eventBus.fire("error", {status: xhr.status, msg: xhr.statusText});
 				},
 				success:  function (data) {
 					self.set(data);

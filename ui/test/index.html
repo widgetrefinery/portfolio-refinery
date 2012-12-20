@@ -6,8 +6,12 @@
 <body>
 <div id="qunit"></div>
 <script src="lib/qunit-1.10.0.js"></script>
-<script src="../src/js/lib/require/require-2.1.1.min.js"></script>
+<!--[if IE]>
+<script src="../src/js/lib/json2.js"></script>
+<![endif]-->
+<script src="../src/js/lib/require/require-2.1.2.min.js"></script>
 <script>
+	QUnit.config.autostart = false;
 	requirejs.config({
 		baseUrl: '../src/js',
 		paths:   {
@@ -25,6 +29,7 @@
 		}
 	});
 	require(['./util/app.qunit.js'], function () {
+		QUnit.start();
 	});
 </script>
 </body>

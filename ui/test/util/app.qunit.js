@@ -1,4 +1,4 @@
-require(['util/app'], function (app) {
+require(['util/app', 'jquery', 'jquery.mockjax'], function (app, $) {
 	module('util/app');
 
 	test('bless', function () {
@@ -116,5 +116,74 @@ require(['util/app'], function (app) {
 		deepEqual(stats, {listener1: 0, listener2: 1, listener3: 0}, '2nd listener was invoked');
 		app.eventBus.fire(event2);
 		deepEqual(stats, {listener1: 0, listener2: 1, listener3: 0}, 'no listeners were invoked');
+	});
+
+	asyncTest('BaseModel', function () {
+		var TestModel = app.bless(app.BaseModel, {
+			constructor: function () {
+				this.supr();
+			},
+			set:         function (data) {
+				this.data = data;
+			}
+		});
+		var testModel = new TestModel();
+
+		$.mockjax({
+			url:          '/dummy/util/BaseModel/200',
+			type:         'GET',
+			responseTime: 0,
+			contentType:  'application/json',
+			response:     function () {
+				equal(testModel.busy(), true, 'busy flag is set');
+				this.responseText = JSON.stringify({msg: 'good response'});
+			}
+		});
+		$.mockjax({
+			url:          '/dummy/util/BaseModel/401',
+			type:         'GET',
+			status:       401,
+			statusText:   'fake error',
+			responseTime: 0
+		});
+
+		var events = [];
+		var listener = function (e, data) {
+			events.push([e.type, data]);
+		};
+		app.eventBus.add('busy', listener);
+		app.eventBus.add('error', listener);
+
+		fireAjax('/dummy/util/BaseModel/200', part1);
+
+		function fireAjax(url, func) {
+			events = [];
+			testModel.href = url;
+			testModel.refresh();
+			setTimeout(func, 50);
+		}
+
+		function part1() {
+			equal(testModel.busy(), false, 'busy flag is reset');
+			deepEqual(testModel.data, {msg: 'good response'}, 'json data is set');
+			deepEqual(events, [
+				['busy', true],
+				['busy', false]
+			], 'checking fired events');
+			fireAjax('/dummy/util/BaseModel/401', part2);
+		}
+
+		function part2() {
+			equal(testModel.busy(), false, 'busy flag is reset');
+			deepEqual(testModel.data, {msg: 'good response'}, 'json data is still set');
+			deepEqual(events, [
+				['busy', true],
+				['error', {status: 401, msg: 'fake error'}],
+				['busy', false]
+			], 'checking fired events');
+			app.eventBus.remove('busy, listener');
+			app.eventBus.remove('error, listener');
+			start();
+		}
 	});
 });
