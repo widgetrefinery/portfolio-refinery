@@ -1,15 +1,16 @@
 requirejs.config({
 	paths: {
-		bootstrap:        'lib/bootstrap-2.2.2.min',
-		jquery:           'lib/jquery-1.8.3.min',
-		knockout:         'lib/knockout-2.2.0.min',
-		sammy:            'lib/sammy-0.7.2.min',
-		text:             'lib/require/text-2.0.3',
-		'jquery.mockjax': '../../test/lib/jquery.mockjax-1.5.1'
+		'bootstrap':        'lib/bootstrap-2.2.2.min',
+		'jquery':           'lib/jquery-1.8.3.min',
+		'knockout':         'lib/knockout/knockout-2.2.0.min',
+		'knockout.mapping': 'lib/knockout/knockout.mapping-2.3.5.min',
+		'sammy':            'lib/sammy-0.7.2.min',
+		'text':             'lib/require/text-2.0.3',
+		'jquery.mockjax':   '../../test/lib/jquery.mockjax-1.5.1'
 	},
 	shim:  {
-		bootstrap:        ['jquery'],
-		sammy:            ['jquery'],
+		'bootstrap':      ['jquery'],
+		'sammy':          ['jquery'],
 		'jquery.mockjax': ['jquery']
 	}
 });

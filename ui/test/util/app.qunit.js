@@ -123,7 +123,7 @@ require(['util/app', 'jquery', 'jquery.mockjax'], function (app, $) {
 			constructor: function () {
 				this.supr();
 			},
-			set:         function (data) {
+			setData:     function (data) {
 				this.data = data;
 			}
 		});

@@ -62,7 +62,7 @@ define(['jquery', 'knockout'], function ($, ko) {
 					eventBus.fire("error", {status: xhr.status, msg: xhr.statusText});
 				},
 				success:  function (data) {
-					self.set(data);
+					self.setData(data);
 				}
 			});
 		}
