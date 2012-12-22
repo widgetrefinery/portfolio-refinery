@@ -1,6 +1,11 @@
 <div>
+	<div class="btn-group">
+		<a class="btn" data-bind="attr:{href:addResource.href}">Create New</a>
+		<button class="btn" data-bind="bsToggleBtn:showAll">Show All</button>
+	</div>
 	<ul class="nav nav-list well" data-bind="foreach:accounts">
-		<li data-bind="if:show"><a data-bind="attr:{href:resource.href},css:{muted:!active()},text:name"></a></li>
+		<!-- ko if:show -->
+		<li><a data-bind="attr:{href:resource.href},css:{muted:!active()},text:name"></a></li>
+		<!-- /ko -->
 	</ul>
-	<label><input type="checkbox" data-bind="checked:showAll"/>Show All</label>
 </div>

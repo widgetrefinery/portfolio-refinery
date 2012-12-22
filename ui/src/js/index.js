@@ -14,7 +14,7 @@ requirejs.config({
 		'jquery.mockjax': ['jquery']
 	}
 });
-require(['jquery', 'router', 'bootstrap', 'jquery.mockjax'], function ($, router) {
+require(['jquery', 'router', 'bootstrap', 'binding/bsToggleBtn', 'jquery.mockjax'], function ($, router) {
 	$.ajaxSetup({
 		accepts: 'application/json',
 		cache:   false,
@@ -24,11 +24,17 @@ require(['jquery', 'router', 'bootstrap', 'jquery.mockjax'], function ($, router
 		url:          '/account',
 		type:         'GET',
 		contentType:  'application/json',
-		responseText: JSON.stringify([
-			{href: '/account/1', name: 'Account 1', active: false},
-			{href: '/account/2', name: 'Account 2', active: true},
-			{href: '/account/3', name: 'Account 3', active: true}
-		])
+		responseText: JSON.stringify({
+			url:      {
+				self: '/account',
+				add:  '/account/create'
+			},
+			accounts: [
+				{url: {self: '/account/1'}, name: 'Account 1', active: false},
+				{url: {self: '/account/2'}, name: 'Account 2', active: true},
+				{url: {self: '/account/3'}, name: 'Account 3', active: true}
+			]
+		})
 	});
 	router.run();
 });

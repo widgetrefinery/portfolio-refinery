@@ -40,24 +40,26 @@ define(['jquery', 'knockout'], function ($, ko) {
 	var resource = function (resource) {
 		var href;
 		var url;
-		if ('#' == resource.substr(0, 1)) {
-			href = ko.observable(resource);
-			url = ko.computed({
-				read:  function () {
-					return '/' + href().substr(1);
-				},
-				write: function (url) {
-					href('#' + url.substr(1));
-				}
-			});
-		} else {
+		if (!resource || '/' == resource.substr(0, 1)) {
 			url = ko.observable(resource);
 			href = ko.computed({
 				read:  function () {
-					return '#' + url().substr(1);
+					var _url = url();
+					return _url ? '#' + _url.substr(1) : undefined;
 				},
 				write: function (href) {
-					url('/' + href.substr(1));
+					url(href ? '/' + href.substr(1) : undefined);
+				}
+			});
+		} else {
+			href = ko.observable(resource);
+			url = ko.computed({
+				read:  function () {
+					var _href = href();
+					return _href ? '/' + _href.substr(1) : undefined;
+				},
+				write: function (url) {
+					href(url ? '#' + url.substr(1) : undefined);
 				}
 			});
 		}

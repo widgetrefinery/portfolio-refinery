@@ -51,25 +51,54 @@ require(['util/app', 'jquery', 'knockout', 'jquery.mockjax'], function (app, $, 
 	});
 
 	test('resource', function () {
+		//create resource via href string
 		var resource = app.resource('#an/href');
 		equal(resource.href(), '#an/href', 'href parsed from an href');
 		equal(resource.url(), '/an/href', 'url parsed from an href');
 		resource.href('#another/href');
 		equal(resource.href(), '#another/href', 'href updated via href');
 		equal(resource.url(), '/another/href', 'url updated via href');
+		resource.href(undefined);
+		equal(resource.href(), undefined, 'href blanked via href');
+		equal(resource.url(), undefined, 'url blanked via href');
 		resource.url('/a/url');
 		equal(resource.href(), '#a/url', 'href updated via url');
 		equal(resource.url(), '/a/url', 'url updated via url');
-
+		resource.url(undefined);
+		equal(resource.href(), undefined, 'href blanked via url');
+		equal(resource.url(), undefined, 'url blanked via url');
+		//create resource via url string
 		resource = app.resource('/a/url');
 		equal(resource.href(), '#a/url', 'href parsed from a url');
 		equal(resource.url(), '/a/url', 'url parsed from a url');
 		resource.href('#an/href');
 		equal(resource.href(), '#an/href', 'href updated via href');
 		equal(resource.url(), '/an/href', 'url updated via href');
+		resource.href(undefined);
+		equal(resource.href(), undefined, 'href blanked via href');
+		equal(resource.url(), undefined, 'url blanked via href');
 		resource.url('/another/url');
 		equal(resource.href(), '#another/url', 'href updated via url');
 		equal(resource.url(), '/another/url', 'url updated via url');
+		resource.url(undefined);
+		equal(resource.href(), undefined, 'href blanked via url');
+		equal(resource.url(), undefined, 'url blanked via url');
+		//create resource via undefined
+		resource = app.resource(undefined);
+		equal(resource.href(), undefined, 'href parsed from undefined');
+		equal(resource.url(), undefined, 'url parsed from undefined');
+		resource.href('#an/href');
+		equal(resource.href(), '#an/href', 'href updated via href');
+		equal(resource.url(), '/an/href', 'url updated via href');
+		resource.href(undefined);
+		equal(resource.href(), undefined, 'href blanked via href');
+		equal(resource.url(), undefined, 'url blanked via href');
+		resource.url('/a/url');
+		equal(resource.href(), '#a/url', 'href updated via url');
+		equal(resource.url(), '/a/url', 'url updated via url');
+		resource.url(undefined);
+		equal(resource.href(), undefined, 'href blanked via url');
+		equal(resource.url(), undefined, 'url blanked via url');
 	});
 
 	test('url', function () {
