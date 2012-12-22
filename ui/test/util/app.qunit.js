@@ -192,7 +192,7 @@ require(['util/app', 'jquery', 'knockout', 'jquery.mockjax'], function (app, $, 
 
 		function fireAjax(url, func) {
 			events = [];
-			testModel.url(url);
+			testModel.resource.url(url);
 			testModel.refresh();
 			setTimeout(func, 50);
 		}

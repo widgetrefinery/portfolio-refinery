@@ -6,7 +6,7 @@ define([
 	'util/app',
 	'text!view/accounts.html'
 ], function ($, ko, kom, api, app, html) {
-	const Accounts = app.bless(app.BaseModel, {
+	var Accounts = app.bless(app.BaseModel, {
 		constructor: function () {
 			this.supr(app.resource(api.url.accountList));
 			this.accounts = kom.fromJS([]);
@@ -17,7 +17,7 @@ define([
 				data.sort(function (a, b) {
 					return a.name.localeCompare(b.name);
 				});
-				const self = this;
+				var self = this;
 				kom.fromJS(data, {
 					'': {
 						key:    function (data) {
@@ -25,6 +25,7 @@ define([
 						},
 						create: function (options) {
 							var account = kom.fromJS(options.data);
+							account.resource = app.resource(options.data.href);
 							account.show = ko.computed(function () {
 								return account.active() || self.showAll();
 							});

@@ -1,9 +1,9 @@
 require(['model/accounts', 'util/api', 'util/app', 'jquery', 'jquery.mockjax'], function (accounts, api, app, $) {
 	module('model/accounts');
 
-	const ajaxWaitTimeout = 50;
+	var ajaxWaitTimeout = 50;
 
-	const setupMockjax = function () {
+	var setupMockjax = function () {
 		var data = [
 			{href: '/account/1', name: 'Account 1', active: false},
 			{href: '/account/3', name: 'Account 3', active: true},
@@ -49,7 +49,7 @@ require(['model/accounts', 'util/api', 'util/app', 'jquery', 'jquery.mockjax'], 
 		}
 	});
 
-	asyncTest('filter', function () {
+	asyncTest('showAll', function () {
 		setupMockjax();
 		var $root = $('<div>').hide().appendTo($('body'));
 		var widget = app.createWidget(accounts, undefined, $root);
@@ -57,15 +57,40 @@ require(['model/accounts', 'util/api', 'util/app', 'jquery', 'jquery.mockjax'], 
 		setTimeout(part1, ajaxWaitTimeout);
 
 		function part1() {
-			equal(widget.model.showAll(), false, 'only show active accounts by default');
-			equal($root.find('a').length, 2, 'only active accounts are shown in dom');
+			equal(widget.model.showAll(), false, 'showAll defaults to false');
+			equal($root.find('a').length, 2, 'active accounts visible');
 			equal($root.find('a:eq(0)').text(), 'Account 2', 'account 2 is visible');
 			equal($root.find('a:eq(1)').text(), 'Account 3', 'account 3 is visible');
 			widget.model.showAll(true);
-			equal($root.find('a').length, 3, 'all accounts are shown');
+			equal($root.find('a').length, 3, 'all accounts visible');
 			equal($root.find('a:eq(0)').text(), 'Account 1', 'account 1 is visible');
 			equal($root.find('a:eq(1)').text(), 'Account 2', 'account 2 is visible');
 			equal($root.find('a:eq(2)').text(), 'Account 3', 'account 3 is visible');
+			$root.remove();
+			$.mockjaxClear();
+			start();
+		}
+	});
+
+	asyncTest('dom', function () {
+		setupMockjax();
+		var $root = $('<div>').hide().appendTo($('body'));
+		var widget = app.createWidget(accounts, undefined, $root);
+		widget.model.refresh();
+		setTimeout(part1, ajaxWaitTimeout);
+
+		function part1() {
+			equal($root.find('a').length, 2, 'active accounts visible');
+			equal($root.find('a:eq(0)').attr('href'), '#account/2', 'account 2 href');
+			equal($root.find('a:eq(1)').attr('href'), '#account/3', 'account 3 href');
+			equal($root.find('a.muted').length, 0, 'no muted accounts');
+			widget.model.showAll(true);
+			equal($root.find('a').length, 3, 'all accounts visible');
+			equal($root.find('a:eq(0)').attr('href'), '#account/1', 'account 1 href');
+			equal($root.find('a:eq(1)').attr('href'), '#account/2', 'account 2 href');
+			equal($root.find('a:eq(2)').attr('href'), '#account/3', 'account 3 href');
+			equal($root.find('a.muted').length, 1, '1 muted account');
+			equal($root.find('a.muted').text(), 'Account 1', 'account 1 is muted');
 			$root.remove();
 			$.mockjaxClear();
 			start();

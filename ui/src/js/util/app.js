@@ -1,5 +1,5 @@
 define(['jquery', 'knockout'], function ($, ko) {
-	const bless = function (parentClass, classDef) {
+	var bless = function (parentClass, classDef) {
 		if (1 == arguments.length) {
 			classDef = parentClass;
 			parentClass = undefined;
@@ -26,7 +26,7 @@ define(['jquery', 'knockout'], function ($, ko) {
 		return classDef.constructor;
 	};
 
-	const createWidget = function (widget, resource, $container) {
+	var createWidget = function (widget, resource, $container) {
 		var model = new widget.Model(resource);
 		var $view = $(widget.view);
 		$container.append($view);
@@ -37,7 +37,7 @@ define(['jquery', 'knockout'], function ($, ko) {
 		};
 	};
 
-	const resource = function (resource) {
+	var resource = function (resource) {
 		var href;
 		var url;
 		if ('#' == resource.substr(0, 1)) {
@@ -67,7 +67,7 @@ define(['jquery', 'knockout'], function ($, ko) {
 		};
 	};
 
-	const url = function (href) {
+	var url = function (href) {
 		return ko.computed({
 			read:  function () {
 				return '/' + href().substr(1);
@@ -78,7 +78,7 @@ define(['jquery', 'knockout'], function ($, ko) {
 		});
 	};
 
-	const EventBus = bless({
+	var EventBus = bless({
 		constructor: function () {
 			this.bus = $({});
 		},
@@ -92,13 +92,12 @@ define(['jquery', 'knockout'], function ($, ko) {
 			this.bus.trigger(eventName, payload);
 		}
 	});
-	const eventBus = new EventBus();
+	var eventBus = new EventBus();
 
-	const BaseModel = bless({
+	var BaseModel = bless({
 		constructor: function (resource) {
 			this.busy = ko.observable(false);
-			this.href = resource.href;
-			this.url = resource.url;
+			this.resource = resource;
 		},
 		setBusy:     function (busy) {
 			eventBus.fire("busy", busy);
@@ -106,8 +105,8 @@ define(['jquery', 'knockout'], function ($, ko) {
 		},
 		refresh:     function () {
 			this.setBusy(true);
-			const self = this;
-			$.ajax(this.url(), {
+			var self = this;
+			$.ajax(this.resource.url(), {
 				complete: function () {
 					self.setBusy(false);
 				},
