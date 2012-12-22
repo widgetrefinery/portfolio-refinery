@@ -25,9 +25,9 @@ require(['jquery', 'router', 'bootstrap', 'jquery.mockjax'], function ($, router
 		type:         'GET',
 		contentType:  'application/json',
 		responseText: JSON.stringify([
-			{href: '/account/1', name: 'Account 1'},
-			{href: '/account/2', name: 'Account 2'},
-			{href: '/account/3', name: 'Account 3'}
+			{href: '/account/1', name: 'Account 1', active: false},
+			{href: '/account/2', name: 'Account 2', active: true},
+			{href: '/account/3', name: 'Account 3', active: true}
 		])
 	});
 	router.run();

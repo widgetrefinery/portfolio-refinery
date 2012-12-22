@@ -1,4 +1,4 @@
-require(['util/app', 'jquery', 'jquery.mockjax'], function (app, $) {
+require(['util/app', 'jquery', 'knockout', 'jquery.mockjax'], function (app, $, ko) {
 	module('util/app');
 
 	test('bless', function () {
@@ -44,10 +44,44 @@ require(['util/app', 'jquery', 'jquery.mockjax'], function (app, $) {
 		equal(parent.check(), '[Parent] val1 - Parent', 'Parent is properly initialized');
 		equal(child.check(), '[Parent] val2 - Child - Parent', 'Child is properly initialized');
 		equal(grandchild.check(), '[Parent] val3 - Grandchild - Child - Parent', 'Grandchild is properly initialized');
-		equal(child.getValue(), '[Child] val2 - Child - Parent', 'Child overrode getValue()');
+		equal(child.getValue(), '[Child] val2 - Child - Parent', 'Child overwrote getValue()');
 		equal(child.getValue(true), '[Parent] val2 - Child - Parent', 'Child called Parent.getValue()');
-		equal(grandchild.getValue(), '[Grandchild] val3 - Grandchild - Child - Parent', 'Grandchild overrode getValue()');
+		equal(grandchild.getValue(), '[Grandchild] val3 - Grandchild - Child - Parent', 'Grandchild overwrote getValue()');
 		equal(grandchild.getValue(true), '[Parent] val3 - Grandchild - Child - Parent', 'Grandchild called Parent.getValue()');
+	});
+
+	test('resource', function () {
+		var resource = app.resource('#an/href');
+		equal(resource.href(), '#an/href', 'href parsed from an href');
+		equal(resource.url(), '/an/href', 'url parsed from an href');
+		resource.href('#another/href');
+		equal(resource.href(), '#another/href', 'href updated via href');
+		equal(resource.url(), '/another/href', 'url updated via href');
+		resource.url('/a/url');
+		equal(resource.href(), '#a/url', 'href updated via url');
+		equal(resource.url(), '/a/url', 'url updated via url');
+
+		resource = app.resource('/a/url');
+		equal(resource.href(), '#a/url', 'href parsed from a url');
+		equal(resource.url(), '/a/url', 'url parsed from a url');
+		resource.href('#an/href');
+		equal(resource.href(), '#an/href', 'href updated via href');
+		equal(resource.url(), '/an/href', 'url updated via href');
+		resource.url('/another/url');
+		equal(resource.href(), '#another/url', 'href updated via url');
+		equal(resource.url(), '/another/url', 'url updated via url');
+	});
+
+	test('url', function () {
+		var href = ko.observable('#an/href');
+		var url = app.url(href);
+		equal(url(), '/an/href', 'url parsed correctly');
+		href('#another/href');
+		equal(href(), '#another/href', 'href updated via href');
+		equal(url(), '/another/href', 'url updated via href');
+		url('/a/url');
+		equal(href(), '#a/url', 'href updated via url');
+		equal(url(), '/a/url', 'url updated via url');
 	});
 
 	test('eventBus', function () {
@@ -120,14 +154,14 @@ require(['util/app', 'jquery', 'jquery.mockjax'], function (app, $) {
 
 	asyncTest('BaseModel', function () {
 		var TestModel = app.bless(app.BaseModel, {
-			constructor: function () {
-				this.supr();
+			constructor: function (resource) {
+				this.supr(resource);
 			},
 			setData:     function (data) {
 				this.data = data;
 			}
 		});
-		var testModel = new TestModel();
+		var testModel = new TestModel(app.resource('/dummy/url'));
 
 		$.mockjax({
 			url:          '/dummy/util/BaseModel/200',
@@ -158,7 +192,7 @@ require(['util/app', 'jquery', 'jquery.mockjax'], function (app, $) {
 
 		function fireAjax(url, func) {
 			events = [];
-			testModel.href = url;
+			testModel.url(url);
 			testModel.refresh();
 			setTimeout(func, 50);
 		}
@@ -181,8 +215,9 @@ require(['util/app', 'jquery', 'jquery.mockjax'], function (app, $) {
 				['error', {status: 401, msg: 'fake error'}],
 				['busy', false]
 			], 'checking fired events');
-			app.eventBus.remove('busy, listener');
-			app.eventBus.remove('error, listener');
+			app.eventBus.remove('busy', listener);
+			app.eventBus.remove('error', listener);
+			$.mockjaxClear();
 			start();
 		}
 	});

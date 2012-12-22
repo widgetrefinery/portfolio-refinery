@@ -1,5 +1,5 @@
 define(['jquery', 'knockout'], function ($, ko) {
-	var bless = function (parentClass, classDef) {
+	const bless = function (parentClass, classDef) {
 		if (1 == arguments.length) {
 			classDef = parentClass;
 			parentClass = undefined;
@@ -26,7 +26,59 @@ define(['jquery', 'knockout'], function ($, ko) {
 		return classDef.constructor;
 	};
 
-	var EventBus = bless({
+	const createWidget = function (widget, resource, $container) {
+		var model = new widget.Model(resource);
+		var $view = $(widget.view);
+		$container.append($view);
+		ko.applyBindings(model, $view[0]);
+		return {
+			model: model,
+			$view: $view
+		};
+	};
+
+	const resource = function (resource) {
+		var href;
+		var url;
+		if ('#' == resource.substr(0, 1)) {
+			href = ko.observable(resource);
+			url = ko.computed({
+				read:  function () {
+					return '/' + href().substr(1);
+				},
+				write: function (url) {
+					href('#' + url.substr(1));
+				}
+			});
+		} else {
+			url = ko.observable(resource);
+			href = ko.computed({
+				read:  function () {
+					return '#' + url().substr(1);
+				},
+				write: function (href) {
+					url('/' + href.substr(1));
+				}
+			});
+		}
+		return {
+			href: href,
+			url:  url
+		};
+	};
+
+	const url = function (href) {
+		return ko.computed({
+			read:  function () {
+				return '/' + href().substr(1);
+			},
+			write: function (url) {
+				href('#' + url.substr(1));
+			}
+		});
+	};
+
+	const EventBus = bless({
 		constructor: function () {
 			this.bus = $({});
 		},
@@ -40,12 +92,13 @@ define(['jquery', 'knockout'], function ($, ko) {
 			this.bus.trigger(eventName, payload);
 		}
 	});
-	var eventBus = new EventBus();
+	const eventBus = new EventBus();
 
-	var BaseModel = bless({
-		constructor: function (href) {
+	const BaseModel = bless({
+		constructor: function (resource) {
 			this.busy = ko.observable(false);
-			this.href = href;
+			this.href = resource.href;
+			this.url = resource.url;
 		},
 		setBusy:     function (busy) {
 			eventBus.fire("busy", busy);
@@ -53,8 +106,8 @@ define(['jquery', 'knockout'], function ($, ko) {
 		},
 		refresh:     function () {
 			this.setBusy(true);
-			var self = this;
-			$.ajax(this.href, {
+			const self = this;
+			$.ajax(this.url(), {
 				complete: function () {
 					self.setBusy(false);
 				},
@@ -69,8 +122,11 @@ define(['jquery', 'knockout'], function ($, ko) {
 	});
 
 	return {
-		bless:     bless,
-		eventBus:  eventBus,
-		BaseModel: BaseModel
+		bless:        bless,
+		createWidget: createWidget,
+		resource:     resource,
+		url:          url,
+		eventBus:     eventBus,
+		BaseModel:    BaseModel
 	};
 });

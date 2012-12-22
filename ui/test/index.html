@@ -29,7 +29,10 @@
 			'jquery.mockjax': ['jquery']
 		}
 	});
-	require(['./util/app.qunit.js'], function () {
+	require([
+		'./model/accounts.qunit.js',
+		'./util/app.qunit.js'
+	], function () {
 		QUnit.start();
 	});
 </script>

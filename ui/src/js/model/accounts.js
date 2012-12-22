@@ -6,20 +6,29 @@ define([
 	'util/app',
 	'text!view/accounts.html'
 ], function ($, ko, kom, api, app, html) {
-	var Accounts = app.bless(app.BaseModel, {
+	const Accounts = app.bless(app.BaseModel, {
 		constructor: function () {
-			this.supr(api.url.accountList);
+			this.supr(app.resource(api.url.accountList));
 			this.accounts = kom.fromJS([]);
+			this.showAll = ko.observable(false);
 		},
 		setData:     function (data) {
 			if (data) {
 				data.sort(function (a, b) {
 					return a.name.localeCompare(b.name);
 				});
+				const self = this;
 				kom.fromJS(data, {
 					'': {
-						key: function (data) {
+						key:    function (data) {
 							return ko.utils.unwrapObservable(data.href);
+						},
+						create: function (options) {
+							var account = kom.fromJS(options.data);
+							account.show = ko.computed(function () {
+								return account.active() || self.showAll();
+							});
+							return account;
 						}
 					}
 				}, this.accounts);
@@ -30,7 +39,7 @@ define([
 	});
 
 	return {
-		model: Accounts,
+		Model: Accounts,
 		view:  html
 	};
 });

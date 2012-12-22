@@ -1,3 +1,6 @@
-<ul class="nav nav-list well" data-bind="foreach:accounts">
-	<li><a data-bind="attr:{href: '#' + href().substr(1)},text:name"></a></li>
-</ul>
+<div>
+	<ul class="nav nav-list well" data-bind="foreach:accounts">
+		<li data-bind="if:show"><a data-bind="attr:{href:href},text:name"></a></li>
+	</ul>
+	<label><input type="checkbox" data-bind="checked:showAll"/>Show All</label>
+</div>
