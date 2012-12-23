@@ -1,17 +1,17 @@
 define(['sammy'], function (sammy) {
+	var prevPage;
+
+	var loadPage = function (pageName) {
+		return function () {
+			require([pageName], function (page) {
+				prevPage = new page(prevPage);
+			});
+		};
+	};
+
 	return sammy(function () {
-		this.get('#account', function () {
-			require(['page/accounts'], function (accounts) {
-				new accounts();
-			});
-		});
-		this.get('#account/:id', function () {
-			require(['page/account'], function (account) {
-				new account();
-			});
-		});
-		this.get('', function () {
-			location.hash = 'account';
-		});
+		this.get('#account', loadPage('page/accounts'));
+		this.get('#account/:id', loadPage('page/account'));
+		this.get('', loadPage('page/accounts'));
 	});
 });

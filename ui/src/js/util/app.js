@@ -102,7 +102,7 @@ define(['jquery', 'knockout'], function ($, ko) {
 			this.resource = resource;
 		},
 		setBusy:     function (busy) {
-			eventBus.fire("busy", busy);
+			eventBus.fire('busy', busy);
 			this.busy(busy);
 		},
 		refresh:     function () {
@@ -113,12 +113,38 @@ define(['jquery', 'knockout'], function ($, ko) {
 					self.setBusy(false);
 				},
 				error:    function (xhr) {
-					eventBus.fire("error", {status: xhr.status, msg: xhr.statusText});
+					eventBus.fire('error', {status: xhr.status, msg: xhr.statusText});
 				},
 				success:  function (data) {
 					self.setData(data);
 				}
 			});
+		}
+	});
+
+	var BasePage = bless({
+		constructor:  function (prevPage, layoutName, layoutHtml) {
+			if (!prevPage || layoutName != prevPage.layoutName) {
+				$('#content').empty().append(layoutHtml);
+			}
+			this.layoutName = layoutName;
+			this.widgets = {};
+		},
+		createWidget: function (prevPage, widgetDef, resource, $parent) {
+			var widget = undefined;
+			if (prevPage) {
+				widget = prevPage.getWidget(widgetDef.name);
+			}
+			if (widget) {
+				widget.$view.remove().appendTo($parent);
+			} else {
+				widget = createWidget(widgetDef, resource, $parent);
+			}
+			this.widgets[widgetDef.name] = widget;
+			return widget;
+		},
+		getWidget:    function (name) {
+			return this.widgets[name];
 		}
 	});
 
@@ -128,6 +154,7 @@ define(['jquery', 'knockout'], function ($, ko) {
 		resource:     resource,
 		url:          url,
 		eventBus:     eventBus,
-		BaseModel:    BaseModel
+		BaseModel:    BaseModel,
+		BasePage:     BasePage
 	};
 });

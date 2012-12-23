@@ -1,9 +1,22 @@
-define(['jquery', 'knockout', 'model/accounts', 'model/account', 'util/app', 'text!page/2panel.html'], function ($, ko, accounts, account, app, html) {
-	return function () {
-		$('#content').empty().append(html);
-		this.accounts = app.createWidget(accounts, undefined, $('#left'));
-		this.accounts.model.refresh();
-		this.account = app.createWidget(account, app.resource(location.hash), $('#center'));
-		this.account.model.refresh();
-	};
+define([
+	'jquery',
+	'knockout',
+	'model/accounts',
+	'model/account',
+	'page/2panel',
+	'util/app'
+], function ($, ko, accounts, account, parent, app) {
+	return app.bless(parent, {
+		constructor: function (prevPage) {
+			this.supr(prevPage);
+		},
+		setLeft:     function (prevPage, $container) {
+			var accountsWidget = this.createWidget(prevPage, accounts, undefined, $container);
+			accountsWidget.model.refresh();
+		},
+		setCenter:   function (prevPage, $container) {
+			var accountWidget = this.createWidget(prevPage, account, app.resource(location.hash), $container);
+			accountWidget.model.refresh();
+		}
+	});
 });

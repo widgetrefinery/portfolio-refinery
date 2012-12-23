@@ -250,4 +250,39 @@ require(['util/app', 'jquery', 'knockout', 'jquery.mockjax'], function (app, $, 
 			start();
 		}
 	});
+
+	test('BasePage', function () {
+		//constructor should preserve dom when possible
+		var $root = $('<div id="content">original content</div>').hide().appendTo($('body'));
+		var page = new app.BasePage(undefined, '1st layout', '1st layout');
+		equal($root.text(), '1st layout', 'page replace the layout');
+		page = new app.BasePage(page, '1st layout', 'not really the same layout');
+		equal($root.text(), '1st layout', 'page preserved existing layout');
+		page = new app.BasePage(page, '2nd layout', 'a different layout');
+		equal($root.text(), 'a different layout', 'page replaced the layout');
+		//reuse widgets when possible
+		var widgetDef = {
+			Model: function (resource) {
+				this.resource = resource;
+			},
+			name:  'test widget',
+			view:  '<span>my widget html</span>'
+		};
+		$root.empty();
+		var widget = page.createWidget(undefined, widgetDef, '/dummy/resource', $root);
+		deepEqual(widget, page.getWidget('test widget'), 'get the new widget');
+		equal(widget.model.resource, '/dummy/resource', 'resource was handed to model constructor');
+		equal($root.text(), 'my widget html', 'widget html was added to the dom');
+		widgetDef.view = '<span>another widget html</span>';
+		$root.empty();
+		widget = page.createWidget(page, widgetDef, '/dummy/resource2', $root);
+		equal(widget.model.resource, '/dummy/resource', 'page return original widget');
+		equal($root.text(), 'my widget html', 'dom was not modified');
+		widgetDef.name = 'test widget2';
+		$root.empty();
+		widget = page.createWidget(page, widgetDef, '/dummy/resource2', $root);
+		equal(widget.model.resource, '/dummy/resource2', 'page created new widget');
+		equal($root.text(), 'another widget html', 'dom was modified');
+		$root.remove();
+	});
 });

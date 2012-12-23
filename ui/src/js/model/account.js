@@ -14,6 +14,7 @@ define(['knockout', 'util/app', 'text!view/account.html'], function (ko, app, ht
 
 	return {
 		Model: Account,
+		name:  'account',
 		view:  html
 	};
 });

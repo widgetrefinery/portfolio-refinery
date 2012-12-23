@@ -54,6 +54,7 @@ define([
 
 	return {
 		Model: Accounts,
+		name:  'accounts',
 		view:  html
 	};
 });

@@ -1,7 +1,17 @@
-define(['jquery', 'knockout', 'model/accounts', 'util/app', 'text!page/2panel.html'], function ($, ko, accounts, app, html) {
-	return function () {
-		$('#content').empty().append(html);
-		this.accounts = app.createWidget(accounts, undefined, $('#left'));
-		this.accounts.model.refresh();
-	};
+define([
+	'jquery',
+	'knockout',
+	'model/accounts',
+	'page/2panel',
+	'util/app'
+], function ($, ko, accounts, parent, app) {
+	return app.bless(parent, {
+		constructor: function (prevPage) {
+			this.supr(prevPage);
+		},
+		setLeft:     function (prevPage, $container) {
+			var accountsWidget = this.createWidget(prevPage, accounts, undefined, $container);
+			accountsWidget.model.refresh();
+		}
+	});
 });
