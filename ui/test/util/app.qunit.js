@@ -1,4 +1,10 @@
-require(['util/app', 'jquery', 'knockout', 'jquery.mockjax'], function (app, $, ko) {
+require([
+	'util/app',
+	'util/config',
+	'jquery',
+	'knockout',
+	'jquery.mockjax'
+], function (app, config, $, ko) {
 	module('util/app');
 
 	test('bless', function () {
@@ -261,36 +267,46 @@ require(['util/app', 'jquery', 'knockout', 'jquery.mockjax'], function (app, $, 
 
 	test('BasePage', function () {
 		//constructor should preserve dom when possible
-		var $root = $('<div id="content">original content</div>').hide().appendTo($('body'));
+		var $root = $('<div>original content</div>').attr('id', config.dom.rootId).hide().appendTo($('body'));
 		var page = new app.BasePage(undefined, '1st layout', '1st layout');
 		equal($root.text(), '1st layout', 'page replace the layout');
 		page = new app.BasePage(page, '1st layout', 'not really the same layout');
 		equal($root.text(), '1st layout', 'page preserved existing layout');
 		page = new app.BasePage(page, '2nd layout', 'a different layout');
 		equal($root.text(), 'a different layout', 'page replaced the layout');
-		//reuse widgets when possible
+		//create a page with 1 widget
 		var widgetDef = {
 			Model: function (resource) {
 				this.resource = resource;
+				this.value = ko.observable('value 1');
 			},
 			name:  'test widget',
-			view:  '<span>my widget html</span>'
+			view:  '<span data-bind="text:value"></span>'
 		};
 		$root.empty();
 		var widget = page.createWidget(undefined, widgetDef, '/dummy/resource', $root);
-		deepEqual(widget, page.getWidget('test widget'), 'get the new widget');
+		equal(widget, page.getWidget('test widget'), 'getWidget() returned our widget');
 		equal(widget.model.resource, '/dummy/resource', 'resource was handed to model constructor');
-		equal($root.text(), 'my widget html', 'widget html was added to the dom');
-		widgetDef.view = '<span>another widget html</span>';
+		equal($root.text(), 'value 1', 'dom contains our view');
+		widget.model.value('value 2');
+		equal($root.text(), 'value 2', 'view is bound to model');
+		//create a page reusing the old widget
 		$root.empty();
 		widget = page.createWidget(page, widgetDef, '/dummy/resource2', $root);
-		equal(widget.model.resource, '/dummy/resource', 'page return original widget');
-		equal($root.text(), 'my widget html', 'dom was not modified');
-		widgetDef.name = 'test widget2';
+		equal(widget, page.getWidget('test widget'), 'getWidget() returned our widget');
+		equal(widget.model.resource, '/dummy/resource', 'still using the same model');
+		equal($root.text(), 'value 2', 'dom contains our view');
+		widget.model.value('value 3');
+		equal($root.text(), 'value 3', 'view is bound to model');
+		//create a page with a different widget
+		widgetDef.name = 'test widget 2';
 		$root.empty();
 		widget = page.createWidget(page, widgetDef, '/dummy/resource2', $root);
+		equal(widget, page.getWidget('test widget 2'), 'getWidget() returned our widget');
 		equal(widget.model.resource, '/dummy/resource2', 'page created new widget');
-		equal($root.text(), 'another widget html', 'dom was modified');
+		equal($root.text(), 'value 1', 'dom contains our view');
+		widget.model.value('value 4');
+		equal($root.text(), 'value 4', 'view is bound to model');
 		$root.remove();
 	});
 });

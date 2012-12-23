@@ -1,4 +1,11 @@
-require(['model/accounts', 'util/api', 'util/app', 'jquery', 'jquery.mockjax'], function (accounts, api, app, $) {
+require([
+	'model/accounts',
+	'util/app',
+	'util/config',
+	'jquery',
+	'knockout',
+	'jquery.mockjax'
+], function (accounts, app, config, $, ko) {
 	module('model/accounts');
 
 	var ajaxWaitTimeout = 50;
@@ -16,7 +23,7 @@ require(['model/accounts', 'util/api', 'util/app', 'jquery', 'jquery.mockjax'], 
 			]
 		};
 		$.mockjax({
-			url:          api.url.accountList,
+			url:          config.url.accountList,
 			type:         'GET',
 			responseTime: 0,
 			contentType:  'application/json',
@@ -29,27 +36,26 @@ require(['model/accounts', 'util/api', 'util/app', 'jquery', 'jquery.mockjax'], 
 
 	asyncTest('refresh', function () {
 		var data = setupMockjax();
-		var $root = $('<div>');
-		var widget = app.createWidget(accounts, undefined, $root);
-		widget.model.refresh();
+		var model = new accounts.Model();
+		model.refresh();
 		setTimeout(part1, ajaxWaitTimeout);
 
 		function part1() {
-			equal(widget.model.accounts().length, 3, 'all accounts loaded');
-			equal(widget.model.accounts()[0].url.self(), '/account/1', 'accounts are sorted');
-			equal(widget.model.accounts()[1].url.self(), '/account/2', 'accounts are sorted');
-			equal(widget.model.accounts()[2].url.self(), '/account/3', 'accounts are sorted');
+			equal(model.accounts().length, 3, 'all accounts loaded');
+			equal(model.accounts()[0].url.self(), '/account/1', 'accounts are sorted');
+			equal(model.accounts()[1].url.self(), '/account/2', 'accounts are sorted');
+			equal(model.accounts()[2].url.self(), '/account/3', 'accounts are sorted');
 			data.accounts.push({url: {self: '/account/0'}, name: 'Account 0', active: false});
-			widget.model.refresh();
+			model.refresh();
 			setTimeout(part2, ajaxWaitTimeout);
 		}
 
 		function part2() {
-			equal(widget.model.accounts().length, 4, 'new account added');
-			equal(widget.model.accounts()[0].url.self(), '/account/0', 'accounts are sorted');
-			equal(widget.model.accounts()[1].url.self(), '/account/1', 'accounts are sorted');
-			equal(widget.model.accounts()[2].url.self(), '/account/2', 'accounts are sorted');
-			equal(widget.model.accounts()[3].url.self(), '/account/3', 'accounts are sorted');
+			equal(model.accounts().length, 4, 'new account added');
+			equal(model.accounts()[0].url.self(), '/account/0', 'accounts are sorted');
+			equal(model.accounts()[1].url.self(), '/account/1', 'accounts are sorted');
+			equal(model.accounts()[2].url.self(), '/account/2', 'accounts are sorted');
+			equal(model.accounts()[3].url.self(), '/account/3', 'accounts are sorted');
 			$.mockjaxClear();
 			start();
 		}
@@ -57,20 +63,19 @@ require(['model/accounts', 'util/api', 'util/app', 'jquery', 'jquery.mockjax'], 
 
 	asyncTest('showAll', function () {
 		setupMockjax();
-		var $root = $('<div>');
-		var widget = app.createWidget(accounts, undefined, $root);
-		widget.model.refresh();
+		var model = new accounts.Model();
+		model.refresh();
 		setTimeout(part1, ajaxWaitTimeout);
 
 		function part1() {
-			equal(widget.model.showAll(), false, 'showAll defaults to false');
-			equal(widget.model.accounts()[0].show(), false, 'account 1 is hidden');
-			equal(widget.model.accounts()[1].show(), true, 'account 2 is visible');
-			equal(widget.model.accounts()[2].show(), true, 'account 3 is visible');
-			widget.model.showAll(true);
-			equal(widget.model.accounts()[0].show(), true, 'account 1 is hidden');
-			equal(widget.model.accounts()[1].show(), true, 'account 2 is visible');
-			equal(widget.model.accounts()[2].show(), true, 'account 3 is visible');
+			equal(model.showAll(), false, 'showAll defaults to false');
+			equal(model.accounts()[0].show(), false, 'account 1 is hidden');
+			equal(model.accounts()[1].show(), true, 'account 2 is visible');
+			equal(model.accounts()[2].show(), true, 'account 3 is visible');
+			model.showAll(true);
+			equal(model.accounts()[0].show(), true, 'account 1 is hidden');
+			equal(model.accounts()[1].show(), true, 'account 2 is visible');
+			equal(model.accounts()[2].show(), true, 'account 3 is visible');
 			$.mockjaxClear();
 			start();
 		}
@@ -79,8 +84,10 @@ require(['model/accounts', 'util/api', 'util/app', 'jquery', 'jquery.mockjax'], 
 	asyncTest('dom', function () {
 		setupMockjax();
 		var $root = $('<div>').hide().appendTo($('body'));
-		var widget = app.createWidget(accounts, undefined, $root);
-		widget.model.refresh();
+		var model = new accounts.Model();
+		var $view = $(accounts.view).appendTo($root);
+		ko.applyBindings(model, $view[0]);
+		model.refresh();
 		setTimeout(part1, ajaxWaitTimeout);
 
 		function part1() {
@@ -90,7 +97,7 @@ require(['model/accounts', 'util/api', 'util/app', 'jquery', 'jquery.mockjax'], 
 			equal($root.find('li:eq(0) a').attr('href'), '#account/2', 'account href is set');
 			equal($root.find('li .muted').length, 0, 'no muted accounts');
 			$root.find('.btn-group button').trigger('click');
-			equal(widget.model.showAll(), true, 'showAll enabled via dom');
+			equal(model.showAll(), true, 'showAll enabled via dom');
 			equal($root.find('.btn-group button').hasClass('active'), true, 'show all button is selected');
 			equal($root.find('li').length, 3, 'all accounts visible');
 			equal($root.find('li .muted').length, 1, '1 muted account');

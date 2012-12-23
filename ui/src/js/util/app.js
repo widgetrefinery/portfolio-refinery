@@ -1,4 +1,8 @@
-define(['jquery', 'knockout'], function ($, ko) {
+define([
+	'util/config',
+	'jquery',
+	'knockout'
+], function (config, $, ko) {
 	var bless = function (parentClass, classDef) {
 		if (1 == arguments.length) {
 			classDef = parentClass;
@@ -35,17 +39,6 @@ define(['jquery', 'knockout'], function ($, ko) {
 		}
 		classDef.constructor.prototype = clazz;
 		return classDef.constructor;
-	};
-
-	var createWidget = function (widget, resource, $container) {
-		var model = new widget.Model(resource);
-		var $view = $(widget.view);
-		$container.append($view);
-		ko.applyBindings(model, $view[0]);
-		return {
-			model: model,
-			$view: $view
-		};
 	};
 
 	var resource = function (resource) {
@@ -136,7 +129,7 @@ define(['jquery', 'knockout'], function ($, ko) {
 	var BasePage = bless({
 		constructor:  function (prevPage, layoutName, layoutHtml) {
 			if (!prevPage || layoutName != prevPage.layoutName) {
-				$('#content').empty().append(layoutHtml);
+				$('#' + config.dom.rootId).empty().append(layoutHtml);
 			}
 			this.layoutName = layoutName;
 			this.widgets = {};
@@ -146,11 +139,11 @@ define(['jquery', 'knockout'], function ($, ko) {
 			if (prevPage) {
 				widget = prevPage.getWidget(widgetDef.name);
 			}
-			if (widget) {
-				widget.$view.remove().appendTo($parent);
-			} else {
-				widget = createWidget(widgetDef, resource, $parent);
+			if (!widget) {
+				widget = {model: new widgetDef.Model(resource)};
 			}
+			widget.$view = $(widgetDef.view).appendTo($parent);
+			ko.applyBindings(widget.model, widget.$view[0]);
 			this.widgets[widgetDef.name] = widget;
 			return widget;
 		},
@@ -160,12 +153,11 @@ define(['jquery', 'knockout'], function ($, ko) {
 	});
 
 	return {
-		bless:        bless,
-		createWidget: createWidget,
-		resource:     resource,
-		url:          url,
-		eventBus:     eventBus,
-		BaseModel:    BaseModel,
-		BasePage:     BasePage
+		bless:     bless,
+		resource:  resource,
+		url:       url,
+		eventBus:  eventBus,
+		BaseModel: BaseModel,
+		BasePage:  BasePage
 	};
 });

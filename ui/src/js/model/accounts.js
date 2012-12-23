@@ -1,13 +1,13 @@
 define([
-	'knockout',
-	'knockout.mapping',
-	'util/api',
 	'util/app',
-	'text!view/accounts.html'
-], function (ko, kom, api, app, html) {
+	'util/config',
+	'text!view/accounts.html',
+	'knockout',
+	'knockout.mapping'
+], function (app, config, view, ko, kom) {
 	var Accounts = app.bless(app.BaseModel, {
 		constructor:    function () {
-			this.supr(app.resource(api.url.accountList));
+			this.supr(app.resource(config.url.accountList));
 			this.addResource = app.resource(undefined);
 			this.accounts = kom.fromJS([]);
 			this.showAll = ko.observable(false);
@@ -55,6 +55,6 @@ define([
 	return {
 		Model: Accounts,
 		name:  'accounts',
-		view:  html
+		view:  view
 	};
 });
