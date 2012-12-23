@@ -37,17 +37,25 @@ require(['util/app', 'jquery', 'knockout', 'jquery.mockjax'], function (app, $, 
 				}
 			}
 		});
+		var Parent2 = app.bless(Parent, {
+			getValue: function () {
+				return '[Parent2] ' + this.value;
+			}
+		});
 
 		var parent = new Parent('val1');
 		var child = new Child('val2');
 		var grandchild = new Grandchild('val3');
+		var parent2 = new Parent2('val4');
 		equal(parent.check(), '[Parent] val1 - Parent', 'Parent is properly initialized');
 		equal(child.check(), '[Parent] val2 - Child - Parent', 'Child is properly initialized');
 		equal(grandchild.check(), '[Parent] val3 - Grandchild - Child - Parent', 'Grandchild is properly initialized');
+		equal(parent2.check(), '[Parent] val4 - Parent', 'Parent2 is property initialized');
 		equal(child.getValue(), '[Child] val2 - Child - Parent', 'Child overwrote getValue()');
 		equal(child.getValue(true), '[Parent] val2 - Child - Parent', 'Child called Parent.getValue()');
 		equal(grandchild.getValue(), '[Grandchild] val3 - Grandchild - Child - Parent', 'Grandchild overwrote getValue()');
 		equal(grandchild.getValue(true), '[Parent] val3 - Grandchild - Child - Parent', 'Grandchild called Parent.getValue()');
+		equal(parent2.getValue(), '[Parent2] val4 - Parent', 'Parent2 overwrote getValue()');
 	});
 
 	test('resource', function () {

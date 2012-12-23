@@ -4,6 +4,17 @@ define(['jquery', 'knockout'], function ($, ko) {
 			classDef = parentClass;
 			parentClass = undefined;
 		}
+		//provide a default constructor if none was defined
+		if (!classDef.hasOwnProperty('constructor')) {
+			if (parentClass) {
+				classDef.constructor = function () {
+					this.supr.apply(this, arguments);
+				};
+			} else {
+				classDef.constructor = function () {
+				};
+			}
+		}
 		var clazz = {};
 		if (parentClass) {
 			$.extend(clazz, parentClass.prototype);

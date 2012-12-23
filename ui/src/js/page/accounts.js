@@ -6,10 +6,7 @@ define([
 	'util/app'
 ], function ($, ko, accounts, parent, app) {
 	return app.bless(parent, {
-		constructor: function (prevPage) {
-			this.supr(prevPage);
-		},
-		setLeft:     function (prevPage, $container) {
+		setLeft: function (prevPage, $container) {
 			var accountsWidget = this.createWidget(prevPage, accounts, undefined, $container);
 			accountsWidget.model.refresh();
 		}

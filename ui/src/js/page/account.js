@@ -7,14 +7,11 @@ define([
 	'util/app'
 ], function ($, ko, accounts, account, parent, app) {
 	return app.bless(parent, {
-		constructor: function (prevPage) {
-			this.supr(prevPage);
-		},
-		setLeft:     function (prevPage, $container) {
+		setLeft:   function (prevPage, $container) {
 			var accountsWidget = this.createWidget(prevPage, accounts, undefined, $container);
 			accountsWidget.model.refresh();
 		},
-		setCenter:   function (prevPage, $container) {
+		setCenter: function (prevPage, $container) {
 			var accountWidget = this.createWidget(prevPage, account, app.resource(location.hash), $container);
 			accountWidget.model.refresh();
 		}
