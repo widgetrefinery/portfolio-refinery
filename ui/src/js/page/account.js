@@ -1,12 +1,10 @@
 define([
-	'jquery',
-	'knockout',
-	'model/accounts',
 	'model/account',
+	'model/accounts',
 	'page/2panel',
 	'util/app'
-], function ($, ko, accounts, account, parent, app) {
-	return app.bless(parent, {
+], function (account, accounts, Parent, app) {
+	return app.bless(Parent, {
 		setLeft:   function (prevPage, $container) {
 			var accountsWidget = this.createWidget(prevPage, accounts, undefined, $container);
 			accountsWidget.model.refresh();

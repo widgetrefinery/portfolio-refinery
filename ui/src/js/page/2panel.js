@@ -1,7 +1,11 @@
-define(['jquery', 'util/app', 'text!page/2panel.html'], function ($, app, html) {
+define([
+	'jquery',
+	'util/app',
+	'text!page/2panel.html'
+], function ($, app, layout) {
 	return app.bless(app.BasePage, {
 		constructor: function (prevPage) {
-			this.supr(prevPage, '2panel', html);
+			this.supr(prevPage, '2panel', layout);
 			this.setLeft(prevPage, $('#left').empty());
 			this.setCenter(prevPage, $('#center').empty());
 		},

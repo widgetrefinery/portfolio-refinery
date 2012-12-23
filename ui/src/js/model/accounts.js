@@ -1,10 +1,10 @@
 define([
+	'knockout',
+	'knockout.mapping',
 	'util/app',
 	'util/config',
-	'text!view/accounts.html',
-	'knockout',
-	'knockout.mapping'
-], function (app, config, view, ko, kom) {
+	'text!view/accounts.html'
+], function (ko, kom, app, config, view) {
 	var Accounts = app.bless(app.BaseModel, {
 		constructor:    function () {
 			this.supr(app.resource(config.url.accountList));

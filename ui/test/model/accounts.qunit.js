@@ -1,11 +1,11 @@
 require([
+	'jquery',
+	'knockout',
 	'model/accounts',
 	'util/app',
 	'util/config',
-	'jquery',
-	'knockout',
 	'jquery.mockjax'
-], function (accounts, app, config, $, ko) {
+], function ($, ko, accounts, app, config) {
 	module('model/accounts');
 
 	var ajaxWaitTimeout = 50;

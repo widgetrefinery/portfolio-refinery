@@ -14,7 +14,13 @@ requirejs.config({
 		'jquery.mockjax': ['jquery']
 	}
 });
-require(['jquery', 'router', 'bootstrap', 'binding/bsToggleBtn', 'jquery.mockjax'], function ($, router) {
+require([
+	'jquery',
+	'router',
+	'bootstrap',
+	'binding/bsToggleBtn',
+	'jquery.mockjax'
+], function ($, router) {
 	$.ajaxSetup({
 		accepts: 'application/json',
 		cache:   false,

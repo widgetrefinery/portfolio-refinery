@@ -1,4 +1,8 @@
-define(['jquery', 'knockout', 'binding/bsToggleBtn'], function ($, ko) {
+define([
+	'jquery',
+	'knockout',
+	'binding/bsToggleBtn'
+], function ($, ko) {
 	module('binding/bsToggleBtn');
 
 	test('binding', function () {

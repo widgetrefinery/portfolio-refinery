@@ -1,4 +1,8 @@
-define(['jquery', 'knockout', 'bootstrap'], function ($, ko) {
+define([
+	'jquery',
+	'knockout',
+	'bootstrap'
+], function ($, ko) {
 	ko.bindingHandlers.bsToggleBtn = {
 		init:   function (elem, value) {
 			var $elem = $(elem);

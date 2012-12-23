@@ -1,8 +1,8 @@
 define([
-	'util/config',
 	'jquery',
-	'knockout'
-], function (config, $, ko) {
+	'knockout',
+	'util/config'
+], function ($, ko, config) {
 	var bless = function (parentClass, classDef) {
 		if (1 == arguments.length) {
 			classDef = parentClass;

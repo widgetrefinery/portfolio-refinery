@@ -1,4 +1,8 @@
-define(['knockout', 'util/app', 'text!view/account.html'], function (ko, app, html) {
+define([
+	'knockout',
+	'util/app',
+	'text!view/account.html'
+], function (ko, app, view) {
 	var Account = app.bless(app.BaseModel, {
 		constructor: function (resource) {
 			this.supr(resource);
@@ -15,6 +19,6 @@ define(['knockout', 'util/app', 'text!view/account.html'], function (ko, app, ht
 	return {
 		Model: Account,
 		name:  'account',
-		view:  html
+		view:  view
 	};
 });

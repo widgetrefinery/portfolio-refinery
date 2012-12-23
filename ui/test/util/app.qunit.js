@@ -1,10 +1,10 @@
 require([
-	'util/app',
-	'util/config',
 	'jquery',
 	'knockout',
+	'util/app',
+	'util/config',
 	'jquery.mockjax'
-], function (app, config, $, ko) {
+], function ($, ko, app, config) {
 	module('util/app');
 
 	test('bless', function () {
