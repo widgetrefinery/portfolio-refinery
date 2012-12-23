@@ -36,5 +36,17 @@ require(['jquery', 'router', 'bootstrap', 'binding/bsToggleBtn', 'jquery.mockjax
 			]
 		})
 	});
+	$.mockjax({
+		url:          '/account/*',
+		type:         'GET',
+		contentType:  'application/json',
+		responseText: JSON.stringify({
+			url:    {
+				self: '/account/2'
+			},
+			name:   'Account 2',
+			active: true
+		})
+	});
 	router.run();
 });

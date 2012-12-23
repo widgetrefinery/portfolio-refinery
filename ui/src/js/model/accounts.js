@@ -1,11 +1,10 @@
 define([
-	'jquery',
 	'knockout',
 	'knockout.mapping',
 	'util/api',
 	'util/app',
 	'text!view/accounts.html'
-], function ($, ko, kom, api, app, html) {
+], function (ko, kom, api, app, html) {
 	var Accounts = app.bless(app.BaseModel, {
 		constructor:    function () {
 			this.supr(app.resource(api.url.accountList));
