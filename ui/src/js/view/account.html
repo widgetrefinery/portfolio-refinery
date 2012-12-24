@@ -1,19 +1,13 @@
-<form class="form-horizontal">
-	<div class="control-group">
-		<label class="control-label" for="account-name">Name</label>
-		<div class="controls">
-			<input id="account-name" type="text" data-bind="value:name"/>
-		</div>
+<div class="btn-toolbar">
+	<div class="btn-group">
+		<a class="btn" data-bind="attr:{href:addEntryResource.href}"><i class="icon-file"></i> New</a>
+		<a class="btn"><i class="icon-pencil"></i> Edit</a>
 	</div>
-	<div class="control-group">
-		<label class="control-label" for="account-active">Active</label>
-		<div class="controls">
-			<input id="account-active" type="checkbox" data-bind="checked:active"/>
-		</div>
+	<div class="btn-group">
+		<a class="btn dropdown-toggle" data-toggle="dropdown"><i class="icon-folder-close"></i> Account</a>
+		<ul class="dropdown-menu">
+			<li><a data-bind="attr:{href:editResource.href}"><i class="icon-pencil"></i> Edit</a></li>
+			<li><a data-bind="click:del"><i class="icon-trash"></i> Delete</a></li>
+		</ul>
 	</div>
-	<div class="control-group">
-		<div class="controls">
-			<button type="submit" class="btn">Save</button>
-		</div>
-	</div>
-</form>
+</div>

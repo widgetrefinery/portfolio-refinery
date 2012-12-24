@@ -8,23 +8,23 @@ define([
 	var Accounts = app.bless(app.BaseModel, {
 		constructor:    function () {
 			this.supr(app.resource(config.url.accountList));
-			this.addResource = app.resource(undefined);
+			this.addAccountResource = app.resource(undefined);
 			this.accounts = kom.fromJS([]);
 			this.showAll = ko.observable(false);
 		},
 		setData:        function (data) {
-			var addUrl = undefined;
+			var addAccountUrl = undefined;
 			var hasAccounts = false;
 			if (data) {
 				if (data.url) {
-					addUrl = data.url.add;
+					addAccountUrl = data.url.addAccount;
 				}
 				if (data.accounts) {
 					hasAccounts = true;
 					this._parseAccounts(data.accounts);
 				}
 			}
-			this.addResource.url(addUrl);
+			this.addAccountResource.url(addAccountUrl);
 			if (!hasAccounts) {
 				this.accounts.removeAll();
 			}

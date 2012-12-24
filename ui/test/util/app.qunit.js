@@ -64,6 +64,24 @@ require([
 		equal(parent2.getValue(), '[Parent2] val4 - Parent', 'Parent2 overwrote getValue()');
 	});
 
+	test('location', function () {
+		app.location(undefined);
+		app.location.goUp();
+		equal(app.location(), undefined, 'go up from undefined is still undefined');
+		app.location('');
+		app.location.goUp();
+		equal(app.location(), '', 'go up from empty string is still empty string');
+		app.location('#');
+		app.location.goUp();
+		equal(app.location(), '#', 'go up from # is #');
+		app.location('#root');
+		app.location.goUp();
+		equal(app.location(), '#', 'go up from #root is #');
+		app.location('#bread/crumb');
+		app.location.goUp();
+		equal(app.location(), '#bread', 'go up from #bread/crumb is #bread');
+	});
+
 	test('resource', function () {
 		//create resource via href string
 		var resource = app.resource('#an/href');
@@ -198,14 +216,19 @@ require([
 			constructor: function (resource) {
 				this.supr(resource);
 			},
+			getData:     function () {
+				return this.data;
+			},
 			setData:     function (data) {
 				this.data = data;
 			}
 		});
 		var testModel = new TestModel(app.resource('/dummy/url'));
 
+		var goodUrl = '/dummy/util/BaseModel/200';
+		var badUrl = '/dummy/util/BaseModel/401';
 		$.mockjax({
-			url:          '/dummy/util/BaseModel/200',
+			url:          goodUrl,
 			type:         'GET',
 			responseTime: 0,
 			contentType:  'application/json',
@@ -215,8 +238,35 @@ require([
 			}
 		});
 		$.mockjax({
-			url:          '/dummy/util/BaseModel/401',
+			url:          badUrl,
 			type:         'GET',
+			status:       401,
+			statusText:   'fake error',
+			responseTime: 0
+		});
+		$.mockjax({
+			url:          goodUrl,
+			data:         JSON.stringify({msg: 'new data'}),
+			type:         'POST',
+			status:       204,
+			responseTime: 0
+		});
+		$.mockjax({
+			url:          badUrl,
+			type:         'POST',
+			status:       401,
+			statusText:   'fake error',
+			responseTime: 0
+		});
+		$.mockjax({
+			url:          goodUrl,
+			type:         'DELETE',
+			status:       204,
+			responseTime: 0
+		});
+		$.mockjax({
+			url:          badUrl,
+			type:         'DELETE',
 			status:       401,
 			statusText:   'fake error',
 			responseTime: 0
@@ -229,12 +279,29 @@ require([
 		app.eventBus.add('busy', listener);
 		app.eventBus.add('error', listener);
 
-		fireAjax('/dummy/util/BaseModel/200', part1);
+		callRefresh(goodUrl, part1);
 
-		function fireAjax(url, func) {
+		function callRefresh(url, func) {
 			events = [];
 			testModel.resource.url(url);
 			testModel.refresh();
+			setTimeout(func, 50);
+		}
+
+		function callSave(url, func) {
+			events = [];
+			testModel.resource.url(url);
+			testModel.data = {msg: 'new data'};
+			app.location('#parent/child');
+			testModel.save();
+			setTimeout(func, 50);
+		}
+
+		function callDel(url, func) {
+			events = [];
+			testModel.resource.url(url);
+			app.location('#parent/child');
+			testModel.del();
 			setTimeout(func, 50);
 		}
 
@@ -245,12 +312,54 @@ require([
 				['busy', true],
 				['busy', false]
 			], 'checking fired events');
-			fireAjax('/dummy/util/BaseModel/401', part2);
+			callRefresh(badUrl, part2);
 		}
 
 		function part2() {
 			equal(testModel.busy(), false, 'busy flag is reset');
 			deepEqual(testModel.data, {msg: 'good response'}, 'json data is still set');
+			deepEqual(events, [
+				['busy', true],
+				['error', {status: 401, msg: 'fake error'}],
+				['busy', false]
+			], 'checking fired events');
+			callSave(goodUrl, part3);
+		}
+
+		function part3() {
+			equal(testModel.busy(), false, 'busy flag is reset');
+			equal(app.location(), '#parent', 'location updated');
+			deepEqual(events, [
+				['busy', true],
+				['busy', false]
+			], 'checking fired events');
+			callSave(badUrl, part4);
+		}
+
+		function part4() {
+			equal(testModel.busy(), false, 'busy flag is reset');
+			equal(app.location(), '#parent/child', 'location unchanged');
+			deepEqual(events, [
+				['busy', true],
+				['error', {status: 401, msg: 'fake error'}],
+				['busy', false]
+			], 'checking fired events');
+			callDel(goodUrl, part5);
+		}
+
+		function part5() {
+			equal(testModel.busy(), false, 'busy flag is reset');
+			equal(app.location(), '#parent', 'location updated');
+			deepEqual(events, [
+				['busy', true],
+				['busy', false]
+			], 'checking fired events');
+			callDel(badUrl, part6);
+		}
+
+		function part6() {
+			equal(testModel.busy(), false, 'busy flag is reset');
+			equal(app.location(), '#parent/child', 'location unchanged');
 			deepEqual(events, [
 				['busy', true],
 				['error', {status: 401, msg: 'fake error'}],

@@ -13,8 +13,8 @@ require([
 	var setupMockjax = function () {
 		var data = {
 			url:      {
-				self: '/account',
-				add:  '/account/create'
+				self:       '/account',
+				addAccount: '/account/create'
 			},
 			accounts: [
 				{url: {self: '/account/1'}, name: 'Account 1', active: false},

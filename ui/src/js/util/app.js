@@ -42,6 +42,18 @@ define([
 	};
 
 	var location = ko.observable('');
+	location.goUp = function () {
+		var href = location();
+		if (href) {
+			var ndx = href.lastIndexOf('/');
+			if (-1 != ndx) {
+				href = href.substring(0, ndx);
+			} else {
+				href = '#';
+			}
+			location(href);
+		}
+	};
 
 	var resource = function (resource) {
 		var href;
@@ -124,6 +136,40 @@ define([
 				},
 				success:  function (data) {
 					self.setData(data);
+				}
+			});
+		},
+		save:        function () {
+			this.setBusy(true);
+			var self = this;
+			$.ajax(this.resource.url(), {
+				contentType: 'application/json',
+				data:        JSON.stringify(this.getData()),
+				type:        'POST',
+				complete:    function () {
+					self.setBusy(false);
+				},
+				error:       function (xhr) {
+					eventBus.fire('error', {status: xhr.status, msg: xhr.statusText});
+				},
+				success:     function () {
+					location.goUp();
+				}
+			});
+		},
+		del:         function () {
+			this.setBusy(true);
+			var self = this;
+			$.ajax(this.resource.url(), {
+				type:     'DELETE',
+				complete: function () {
+					self.setBusy(false);
+				},
+				error:    function (xhr) {
+					eventBus.fire('error', {status: xhr.status, msg: xhr.statusText});
+				},
+				success:  function () {
+					location.goUp();
 				}
 			});
 		}

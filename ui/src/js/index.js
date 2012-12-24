@@ -34,8 +34,8 @@ require([
 		contentType:  'application/json',
 		responseText: JSON.stringify({
 			url:      {
-				self: '/account',
-				add:  '/account/create'
+				self:       '/account',
+				addAccount: '/account/create'
 			},
 			accounts: [
 				{url: {self: '/account/1'}, name: 'Account 1', active: false},
@@ -51,11 +51,22 @@ require([
 		contentType:  'application/json',
 		responseText: JSON.stringify({
 			url:    {
-				self: '/account/2'
+				self:     '/account/2',
+				addEntry: '/account/2/transaction/create'
 			},
 			name:   'Account 2',
 			active: true
 		})
+	});
+	$.mockjax({
+		url:    '/account/*',
+		type:   'POST',
+		status: 204
+	});
+	$.mockjax({
+		url:    '/account/*',
+		type:   'DELETE',
+		status: 204
 	});
 	router.run();
 });
