@@ -1,11 +1,19 @@
-<div>
-	<div class="btn-group">
-		<a class="btn" data-bind="attr:{href:addResource.href}">Create New</a>
-		<button class="btn" data-bind="bsToggleBtn:showAll">Show All</button>
-	</div>
-	<ul class="nav nav-list well" data-bind="foreach:accounts">
-		<!-- ko if:show -->
-		<li><a data-bind="attr:{href:resource.href},css:{muted:!active()},text:name"></a></li>
-		<!-- /ko -->
-	</ul>
-</div>
+<ul class="nav nav-list">
+	<li data-bind="css:{active:addResource.active()}"><a data-bind="attr:{href:addResource.href}">New Account</a></li>
+	<li class="nav-header">Accounts</li>
+	<li>
+		<ul class="nav nav-list" data-bind="foreach:accounts">
+			<!-- ko if:active -->
+			<li data-bind="css:{active:resource.active()}"><a data-bind="attr:{href:resource.href},text:name"></a></li>
+			<!-- /ko -->
+		</ul>
+	</li>
+	<li class="nav-header" data-bind="toggle:showAll">Inactive Accounts</li>
+	<li data-bind="bsCollapse:showAll">
+		<ul class="nav nav-list" data-bind="foreach:accounts">
+			<!-- ko ifnot:active -->
+			<li data-bind="css:{active:resource.active()}"><a data-bind="attr:{href:resource.href},text:name"></a></li>
+			<!-- /ko -->
+		</ul>
+	</li>
+</ul>

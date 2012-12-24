@@ -113,18 +113,16 @@ require([
 		resource.url(undefined);
 		equal(resource.href(), undefined, 'href blanked via url');
 		equal(resource.url(), undefined, 'url blanked via url');
-	});
-
-	test('url', function () {
-		var href = ko.observable('#an/href');
-		var url = app.url(href);
-		equal(url(), '/an/href', 'url parsed correctly');
-		href('#another/href');
-		equal(href(), '#another/href', 'href updated via href');
-		equal(url(), '/another/href', 'url updated via href');
-		url('/a/url');
-		equal(href(), '#a/url', 'href updated via url');
-		equal(url(), '/a/url', 'url updated via url');
+		//active
+		resource.url('/a/url');
+		app.location('#a');
+		equal(resource.active(), false, 'href is more specific than current location');
+		app.location('#a/url');
+		equal(resource.active(), true, 'href is the same as current location');
+		app.location('#a/url/link');
+		equal(resource.active(), true, 'href is less specific than current location');
+		app.location('#a/urls');
+		equal(resource.active(), false, 'href is a substring of current location but not related');
 	});
 
 	test('eventBus', function () {

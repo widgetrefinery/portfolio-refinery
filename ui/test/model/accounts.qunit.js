@@ -91,17 +91,18 @@ require([
 		setTimeout(part1, ajaxWaitTimeout);
 
 		function part1() {
-			equal($root.find('.btn-group a').attr('href'), '#account/create', 'add account href is set');
-			equal($root.find('.btn-group button').hasClass('active'), false, 'show all button is not selected');
-			equal($root.find('li').length, 2, 'active accounts visible');
-			equal($root.find('li:eq(0) a').attr('href'), '#account/2', 'account href is set');
-			equal($root.find('li .muted').length, 0, 'no muted accounts');
-			$root.find('.btn-group button').trigger('click');
+			app.location('');
+			equal($root.find('ul:eq(0) > li:eq(0) a').attr('href'), '#account/create', 'add account href is set');
+			equal($root.find('ul:eq(1) > li').length, 2, 'active accounts rendered');
+			equal($root.find('ul:eq(1) > li:eq(0) a').attr('href'), '#account/2', 'verified 1st active account');
+			equal($root.find('ul:eq(2) > li').length, 1, 'inactive accounts rendered');
+			equal($root.find('ul:eq(2) > li:eq(0) a').attr('href'), '#account/1', 'verified 1st inactive account');
+			equal($root.find('.active').length, 0, 'no selected accounts');
+			$root.find('ul:eq(0) > li:eq(3)').trigger('click');
 			equal(model.showAll(), true, 'showAll enabled via dom');
-			equal($root.find('.btn-group button').hasClass('active'), true, 'show all button is selected');
-			equal($root.find('li').length, 3, 'all accounts visible');
-			equal($root.find('li .muted').length, 1, '1 muted account');
-			equal($root.find('li .muted').text(), 'Account 1', 'account 1 is muted');
+			app.location('#account/2');
+			equal($root.find('.active').length, 1, '1 selected accounts');
+			equal($root.find('.active').text(), 'Account 2', 'account 2 is selected');
 			$root.remove();
 			$.mockjaxClear();
 			start();

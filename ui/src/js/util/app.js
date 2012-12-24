@@ -41,6 +41,8 @@ define([
 		return classDef.constructor;
 	};
 
+	var location = ko.observable('');
+
 	var resource = function (resource) {
 		var href;
 		var url;
@@ -68,20 +70,21 @@ define([
 			});
 		}
 		return {
-			href: href,
-			url:  url
+			href:   href,
+			url:    url,
+			active: ko.computed(function () {
+				var hash = location();
+				var hrefStr = href();
+				if (hrefStr) {
+					if (hash.length == hrefStr.length) {
+						return hash == hrefStr;
+					} else if (hash.length > hrefStr.length) {
+						return hash.substr(0, hrefStr.length + 1) == hrefStr + '/';
+					}
+				}
+				return false;
+			})
 		};
-	};
-
-	var url = function (href) {
-		return ko.computed({
-			read:  function () {
-				return '/' + href().substr(1);
-			},
-			write: function (url) {
-				href('#' + url.substr(1));
-			}
-		});
 	};
 
 	var EventBus = bless({
@@ -133,6 +136,7 @@ define([
 			}
 			this.layoutName = layoutName;
 			this.widgets = {};
+			location(window.location.hash);
 		},
 		createWidget: function (prevPage, widgetDef, resource, $parent) {
 			var widget = undefined;
@@ -154,8 +158,8 @@ define([
 
 	return {
 		bless:     bless,
+		location:  location,
 		resource:  resource,
-		url:       url,
 		eventBus:  eventBus,
 		BaseModel: BaseModel,
 		BasePage:  BasePage

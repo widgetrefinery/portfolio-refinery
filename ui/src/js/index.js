@@ -18,7 +18,9 @@ require([
 	'jquery',
 	'router',
 	'bootstrap',
+	'binding/bsCollapse',
 	'binding/bsToggleBtn',
+	'binding/toggle',
 	'jquery.mockjax'
 ], function ($, router) {
 	$.ajaxSetup({
@@ -38,7 +40,8 @@ require([
 			accounts: [
 				{url: {self: '/account/1'}, name: 'Account 1', active: false},
 				{url: {self: '/account/2'}, name: 'Account 2', active: true},
-				{url: {self: '/account/3'}, name: 'Account 3', active: true}
+				{url: {self: '/account/3'}, name: 'Account 3', active: true},
+				{url: {self: '/account/4'}, name: 'Account 4', active: false}
 			]
 		})
 	});
