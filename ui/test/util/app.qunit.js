@@ -2,146 +2,13 @@ require([
 	'jquery',
 	'knockout',
 	'util/app',
+	'util/common',
 	'util/config',
+	'util/uri',
 	'jquery.mockjax'
-], function ($, ko, app, config) {
+], function ($, ko, app, common, config, URI) {
+
 	module('util/app');
-
-	test('bless', function () {
-		var Parent = app.bless({
-			constructor: function (value) {
-				this.value = value + ' - Parent';
-			},
-			check:       function () {
-				return '[Parent] ' + this.value;
-			},
-			getValue:    function () {
-				return '[Parent] ' + this.value;
-			}
-		});
-		var Child = app.bless(Parent, {
-			constructor: function (value) {
-				this.supr(value + ' - Child');
-			},
-			getValue:    function (callParent) {
-				if (callParent) {
-					return this.supr();
-				} else {
-					return '[Child] ' + this.value;
-				}
-			}
-		});
-		var Grandchild = app.bless(Child, {
-			constructor: function (value) {
-				this.supr(value + ' - Grandchild');
-			},
-			getValue:    function (callParent) {
-				if (callParent) {
-					return this.supr(callParent);
-				} else {
-					return '[Grandchild] ' + this.value;
-				}
-			}
-		});
-		var Parent2 = app.bless(Parent, {
-			getValue: function () {
-				return '[Parent2] ' + this.value;
-			}
-		});
-
-		var parent = new Parent('val1');
-		var child = new Child('val2');
-		var grandchild = new Grandchild('val3');
-		var parent2 = new Parent2('val4');
-		equal(parent.check(), '[Parent] val1 - Parent', 'Parent is properly initialized');
-		equal(child.check(), '[Parent] val2 - Child - Parent', 'Child is properly initialized');
-		equal(grandchild.check(), '[Parent] val3 - Grandchild - Child - Parent', 'Grandchild is properly initialized');
-		equal(parent2.check(), '[Parent] val4 - Parent', 'Parent2 is property initialized');
-		equal(child.getValue(), '[Child] val2 - Child - Parent', 'Child overwrote getValue()');
-		equal(child.getValue(true), '[Parent] val2 - Child - Parent', 'Child called Parent.getValue()');
-		equal(grandchild.getValue(), '[Grandchild] val3 - Grandchild - Child - Parent', 'Grandchild overwrote getValue()');
-		equal(grandchild.getValue(true), '[Parent] val3 - Grandchild - Child - Parent', 'Grandchild called Parent.getValue()');
-		equal(parent2.getValue(), '[Parent2] val4 - Parent', 'Parent2 overwrote getValue()');
-	});
-
-	test('location', function () {
-		app.location(undefined);
-		app.location.goUp();
-		equal(app.location(), undefined, 'go up from undefined is still undefined');
-		app.location('');
-		app.location.goUp();
-		equal(app.location(), '', 'go up from empty string is still empty string');
-		app.location('#');
-		app.location.goUp();
-		equal(app.location(), '#', 'go up from # is #');
-		app.location('#root');
-		app.location.goUp();
-		equal(app.location(), '#', 'go up from #root is #');
-		app.location('#bread/crumb');
-		app.location.goUp();
-		equal(app.location(), '#bread', 'go up from #bread/crumb is #bread');
-	});
-
-	test('resource', function () {
-		//create resource via href string
-		var resource = app.resource('#an/href');
-		equal(resource.href(), '#an/href', 'href parsed from an href');
-		equal(resource.url(), '/an/href', 'url parsed from an href');
-		resource.href('#another/href');
-		equal(resource.href(), '#another/href', 'href updated via href');
-		equal(resource.url(), '/another/href', 'url updated via href');
-		resource.href(undefined);
-		equal(resource.href(), undefined, 'href blanked via href');
-		equal(resource.url(), undefined, 'url blanked via href');
-		resource.url('/a/url');
-		equal(resource.href(), '#a/url', 'href updated via url');
-		equal(resource.url(), '/a/url', 'url updated via url');
-		resource.url(undefined);
-		equal(resource.href(), undefined, 'href blanked via url');
-		equal(resource.url(), undefined, 'url blanked via url');
-		//create resource via url string
-		resource = app.resource('/a/url');
-		equal(resource.href(), '#a/url', 'href parsed from a url');
-		equal(resource.url(), '/a/url', 'url parsed from a url');
-		resource.href('#an/href');
-		equal(resource.href(), '#an/href', 'href updated via href');
-		equal(resource.url(), '/an/href', 'url updated via href');
-		resource.href(undefined);
-		equal(resource.href(), undefined, 'href blanked via href');
-		equal(resource.url(), undefined, 'url blanked via href');
-		resource.url('/another/url');
-		equal(resource.href(), '#another/url', 'href updated via url');
-		equal(resource.url(), '/another/url', 'url updated via url');
-		resource.url(undefined);
-		equal(resource.href(), undefined, 'href blanked via url');
-		equal(resource.url(), undefined, 'url blanked via url');
-		//create resource via undefined
-		resource = app.resource(undefined);
-		equal(resource.href(), undefined, 'href parsed from undefined');
-		equal(resource.url(), undefined, 'url parsed from undefined');
-		resource.href('#an/href');
-		equal(resource.href(), '#an/href', 'href updated via href');
-		equal(resource.url(), '/an/href', 'url updated via href');
-		resource.href(undefined);
-		equal(resource.href(), undefined, 'href blanked via href');
-		equal(resource.url(), undefined, 'url blanked via href');
-		resource.url('/a/url');
-		equal(resource.href(), '#a/url', 'href updated via url');
-		equal(resource.url(), '/a/url', 'url updated via url');
-		resource.url(undefined);
-		equal(resource.href(), undefined, 'href blanked via url');
-		equal(resource.url(), undefined, 'url blanked via url');
-		//active
-		resource.url('/a/url');
-		app.location('#a');
-		equal(resource.active(), false, 'href is more specific than current location');
-		app.location('#a/url');
-		equal(resource.active(), true, 'href is the same as current location');
-		app.location('#a/url/link');
-		equal(resource.active(), true, 'href is less specific than current location');
-		app.location('#a/urls');
-		equal(resource.active(), false, 'href is a substring of current location but not related');
-	});
 
 	test('eventBus', function () {
 		var stats;
@@ -209,21 +76,37 @@ require([
 		deepEqual(stats, {listener1: 0, listener2: 1, listener3: 0}, '2nd listener was invoked');
 		app.eventBus.fire(event2);
 		deepEqual(stats, {listener1: 0, listener2: 1, listener3: 0}, 'no listeners were invoked');
+		//clear all listeners
+		app.eventBus.remove(event1);
+		app.eventBus.fire(event1);
+		deepEqual(stats, {listener1: 0, listener2: 1, listener3: 0}, 'no listener was invoked');
 	});
 
-	asyncTest('BaseModel', function () {
-		var TestModel = app.bless(app.BaseModel, {
-			constructor: function (resource) {
-				this.supr(resource);
-			},
-			getData:     function () {
+	test('BaseModel', function () {
+		var TestModel = common.bless(app.BaseModel, 'TestModel', {
+			constructor: function () {
+				this.value = ko.observable();
+			}
+		});
+		var testModel = new TestModel();
+		var $root = $('<div data-bind="text:value"></div>').hide().appendTo($('body'));
+		testModel.bind($root);
+		equal($root.text(), '', 'checking initial view');
+		testModel.value('new value');
+		equal($root.text(), 'new value', 'model automatically updated view');
+		$root.remove();
+	});
+
+	asyncTest('BaseModel.crud', function () {
+		var TestModel = common.bless(app.BaseModel, 'TestModel', {
+			getData: function () {
 				return this.data;
 			},
-			setData:     function (data) {
+			setData: function (data) {
 				this.data = data;
 			}
 		});
-		var testModel = new TestModel(app.resource('/dummy/url'));
+		var testModel = new TestModel('/dummy/url', true);
 
 		var goodUrl = '/dummy/util/BaseModel/200';
 		var badUrl = '/dummy/util/BaseModel/401';
@@ -238,13 +121,6 @@ require([
 			}
 		});
 		$.mockjax({
-			url:          badUrl,
-			type:         'GET',
-			status:       401,
-			statusText:   'fake error',
-			responseTime: 0
-		});
-		$.mockjax({
 			url:          goodUrl,
 			data:         JSON.stringify({msg: 'new data'}),
 			type:         'POST',
@@ -252,24 +128,19 @@ require([
 			responseTime: 0
 		});
 		$.mockjax({
-			url:          badUrl,
-			type:         'POST',
-			status:       401,
-			statusText:   'fake error',
-			responseTime: 0
-		});
-		$.mockjax({
 			url:          goodUrl,
 			type:         'DELETE',
 			status:       204,
 			responseTime: 0
 		});
-		$.mockjax({
-			url:          badUrl,
-			type:         'DELETE',
-			status:       401,
-			statusText:   'fake error',
-			responseTime: 0
+		$.each(['GET', 'POST', 'DELETE'], function (ndx, type) {
+			$.mockjax({
+				url:          badUrl,
+				type:         type,
+				status:       401,
+				statusText:   'fake error',
+				responseTime: 0
+			});
 		});
 
 		var events = [];
@@ -279,30 +150,15 @@ require([
 		app.eventBus.add('busy', listener);
 		app.eventBus.add('error', listener);
 
-		callRefresh(goodUrl, part1);
+		setupAndCheck(goodUrl, 'refresh', part1);
 
-		function callRefresh(url, func) {
+		function setupAndCheck(url, op, check) {
 			events = [];
-			testModel.resource.url(url);
-			testModel.refresh();
-			setTimeout(func, 50);
-		}
-
-		function callSave(url, func) {
-			events = [];
-			testModel.resource.url(url);
+			testModel.uri.url(url);
 			testModel.data = {msg: 'new data'};
-			app.location('#parent/child');
-			testModel.save();
-			setTimeout(func, 50);
-		}
-
-		function callDel(url, func) {
-			events = [];
-			testModel.resource.url(url);
-			app.location('#parent/child');
-			testModel.del();
-			setTimeout(func, 50);
+			URI.current('#parent/child');
+			testModel[op]();
+			setTimeout(check, 50);
 		}
 
 		function part1() {
@@ -312,108 +168,93 @@ require([
 				['busy', true],
 				['busy', false]
 			], 'checking fired events');
-			callRefresh(badUrl, part2);
+			setupAndCheck(badUrl, 'refresh', part2);
 		}
 
 		function part2() {
 			equal(testModel.busy(), false, 'busy flag is reset');
-			deepEqual(testModel.data, {msg: 'good response'}, 'json data is still set');
-			deepEqual(events, [
-				['busy', true],
-				['error', {status: 401, msg: 'fake error'}],
-				['busy', false]
-			], 'checking fired events');
-			callSave(goodUrl, part3);
+			deepEqual(testModel.data, {msg: 'new data'}, 'json data did not change');
+			deepEqual(events[0], ['busy', true], 'checking fired event 0');
+			equal(events[1][0], 'error', 'checking fired event 1');
+			equal(events[1][1].response.status, 401, 'checking fired event 1');
+			equal(events[1][1].response.statusText, 'fake error', 'checking fired event 1');
+			deepEqual(events[2], ['busy', false], 'checking fired event 2');
+			setupAndCheck(goodUrl, 'save', part3);
 		}
 
 		function part3() {
 			equal(testModel.busy(), false, 'busy flag is reset');
-			equal(app.location(), '#parent', 'location updated');
+			equal(URI.current(), '#parent', 'location updated');
 			deepEqual(events, [
 				['busy', true],
 				['busy', false]
 			], 'checking fired events');
-			callSave(badUrl, part4);
+			setupAndCheck(badUrl, 'save', part4);
 		}
 
 		function part4() {
 			equal(testModel.busy(), false, 'busy flag is reset');
-			equal(app.location(), '#parent/child', 'location unchanged');
-			deepEqual(events, [
-				['busy', true],
-				['error', {status: 401, msg: 'fake error'}],
-				['busy', false]
-			], 'checking fired events');
-			callDel(goodUrl, part5);
+			equal(URI.current(), '#parent/child', 'location unchanged');
+			deepEqual(events[0], ['busy', true], 'checking fired event 0');
+			equal(events[1][0], 'error', 'checking fired event 1');
+			equal(events[1][1].response.status, 401, 'checking fired event 1');
+			equal(events[1][1].response.statusText, 'fake error', 'checking fired event 1');
+			deepEqual(events[2], ['busy', false], 'checking fired event 2');
+			setupAndCheck(goodUrl, 'del', part5);
 		}
 
 		function part5() {
 			equal(testModel.busy(), false, 'busy flag is reset');
-			equal(app.location(), '#parent', 'location updated');
+			equal(URI.current(), '#parent', 'location updated');
 			deepEqual(events, [
 				['busy', true],
 				['busy', false]
 			], 'checking fired events');
-			callDel(badUrl, part6);
+			setupAndCheck(badUrl, 'del', part6);
 		}
 
 		function part6() {
 			equal(testModel.busy(), false, 'busy flag is reset');
-			equal(app.location(), '#parent/child', 'location unchanged');
-			deepEqual(events, [
-				['busy', true],
-				['error', {status: 401, msg: 'fake error'}],
-				['busy', false]
-			], 'checking fired events');
-			app.eventBus.remove('busy', listener);
-			app.eventBus.remove('error', listener);
+			equal(URI.current(), '#parent/child', 'location unchanged');
+			deepEqual(events[0], ['busy', true], 'checking fired event 0');
+			equal(events[1][0], 'error', 'checking fired event 1');
+			equal(events[1][1].response.status, 401, 'checking fired event 1');
+			equal(events[1][1].response.statusText, 'fake error', 'checking fired event 1');
+			deepEqual(events[2], ['busy', false], 'checking fired event 2');
+			app.eventBus.remove('busy');
+			app.eventBus.remove('error');
 			$.mockjaxClear();
 			start();
 		}
 	});
 
 	test('BasePage', function () {
-		//constructor should preserve dom when possible
+		//test layout preservation
 		var $root = $('<div>original content</div>').attr('id', config.dom.rootId).hide().appendTo($('body'));
-		var page = new app.BasePage(undefined, '1st layout', '1st layout');
-		equal($root.text(), '1st layout', 'page replace the layout');
-		page = new app.BasePage(page, '1st layout', 'not really the same layout');
-		equal($root.text(), '1st layout', 'page preserved existing layout');
-		page = new app.BasePage(page, '2nd layout', 'a different layout');
+		var page = new app.BasePage(undefined, 'layout1', 'initial layout content');
+		equal($root.text(), 'initial layout content', 'page replace the layout');
+		page = new app.BasePage(page, 'layout1', 'not really the same layout');
+		equal($root.text(), 'initial layout content', 'page preserved existing layout');
+		page = new app.BasePage(page, 'layout2', 'a different layout');
 		equal($root.text(), 'a different layout', 'page replaced the layout');
-		//create a page with 1 widget
-		var widgetDef = {
-			Model: function (resource) {
-				this.resource = resource;
-				this.value = ko.observable('value 1');
-			},
-			name:  'test widget',
-			view:  '<span data-bind="text:value"></span>'
+		//create a page with 1 model
+		var TestModel = function (uri, existing) {
+			this.uri = uri;
+			this.existing = existing;
 		};
-		$root.empty();
-		var widget = page.createWidget(undefined, widgetDef, '/dummy/resource', $root);
-		equal(widget, page.getWidget('test widget'), 'getWidget() returned our widget');
-		equal(widget.model.resource, '/dummy/resource', 'resource was handed to model constructor');
-		equal($root.text(), 'value 1', 'dom contains our view');
-		widget.model.value('value 2');
-		equal($root.text(), 'value 2', 'view is bound to model');
-		//create a page reusing the old widget
-		$root.empty();
-		widget = page.createWidget(page, widgetDef, '/dummy/resource2', $root);
-		equal(widget, page.getWidget('test widget'), 'getWidget() returned our widget');
-		equal(widget.model.resource, '/dummy/resource', 'still using the same model');
-		equal($root.text(), 'value 2', 'dom contains our view');
-		widget.model.value('value 3');
-		equal($root.text(), 'value 3', 'view is bound to model');
-		//create a page with a different widget
-		widgetDef.name = 'test widget 2';
-		$root.empty();
-		widget = page.createWidget(page, widgetDef, '/dummy/resource2', $root);
-		equal(widget, page.getWidget('test widget 2'), 'getWidget() returned our widget');
-		equal(widget.model.resource, '/dummy/resource2', 'page created new widget');
-		equal($root.text(), 'value 1', 'dom contains our view');
-		widget.model.value('value 4');
-		equal($root.text(), 'value 4', 'view is bound to model');
+		TestModel._name = 'testModel1';
+		var model = page._addModel(undefined, TestModel, '/dummy/uri', true);
+		equal(page.__models['testModel1'], model, 'page has cached our model');
+		equal(model.uri, '/dummy/uri', 'uri passed to model constructor');
+		equal(model.existing, true, 'existing passed to model constructor');
+		//create the same model
+		model = page._addModel(page, TestModel, '/dummy/uri2', false);
+		equal(model.uri, '/dummy/uri', 'reused existing model');
+		//create a different model
+		TestModel._name = 'testModel2';
+		model = page._addModel(page, TestModel, '/dummy/uri2', false);
+		equal(model.uri, '/dummy/uri2', 'new model created');
 		$root.remove();
 	});
+
 });

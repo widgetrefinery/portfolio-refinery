@@ -1,4 +1,5 @@
 define(function () {
+
 	return {
 		dom: {
 			rootId: 'content'
@@ -6,5 +7,6 @@ define(function () {
 		url: {
 			accountList: '/account'
 		}
-	}
+	};
+
 });

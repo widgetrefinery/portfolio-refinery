@@ -1,105 +1,12 @@
 define([
 	'jquery',
 	'knockout',
-	'util/config'
-], function ($, ko, config) {
-	var bless = function (parentClass, classDef) {
-		if (1 == arguments.length) {
-			classDef = parentClass;
-			parentClass = undefined;
-		}
-		//provide a default constructor if none was defined
-		if (!classDef.hasOwnProperty('constructor')) {
-			if (parentClass) {
-				classDef.constructor = function () {
-					this.supr.apply(this, arguments);
-				};
-			} else {
-				classDef.constructor = function () {
-				};
-			}
-		}
-		var clazz = {};
-		if (parentClass) {
-			$.extend(clazz, parentClass.prototype);
-			$.each(classDef, function (key, attr) {
-				if (key in clazz) {
-					attr.supr = clazz[key];
-				}
-				clazz[key] = attr;
-			});
-			//IE skips the constructor attribute so we explicitly wire it up here
-			classDef.constructor.supr = parentClass.prototype.constructor;
-			clazz.constructor = classDef.constructor;
-			clazz.supr = function () {
-				return arguments.callee.caller.supr.apply(this, arguments);
-			};
-		} else {
-			clazz = classDef;
-		}
-		classDef.constructor.prototype = clazz;
-		return classDef.constructor;
-	};
+	'util/common',
+	'util/config',
+	'util/uri'
+], function ($, ko, common, config, URI) {
 
-	var location = ko.observable('');
-	location.goUp = function () {
-		var href = location();
-		if (href) {
-			var ndx = href.lastIndexOf('/');
-			if (-1 != ndx) {
-				href = href.substring(0, ndx);
-			} else {
-				href = '#';
-			}
-			location(href);
-		}
-	};
-
-	var resource = function (resource) {
-		var href;
-		var url;
-		if (!resource || '/' == resource.substr(0, 1)) {
-			url = ko.observable(resource);
-			href = ko.computed({
-				read:  function () {
-					var _url = url();
-					return _url ? '#' + _url.substr(1) : undefined;
-				},
-				write: function (href) {
-					url(href ? '/' + href.substr(1) : undefined);
-				}
-			});
-		} else {
-			href = ko.observable(resource);
-			url = ko.computed({
-				read:  function () {
-					var _href = href();
-					return _href ? '/' + _href.substr(1) : undefined;
-				},
-				write: function (url) {
-					href(url ? '#' + url.substr(1) : undefined);
-				}
-			});
-		}
-		return {
-			href:   href,
-			url:    url,
-			active: ko.computed(function () {
-				var hash = location();
-				var hrefStr = href();
-				if (hrefStr) {
-					if (hash.length == hrefStr.length) {
-						return hash == hrefStr;
-					} else if (hash.length > hrefStr.length) {
-						return hash.substr(0, hrefStr.length + 1) == hrefStr + '/';
-					}
-				}
-				return false;
-			})
-		};
-	};
-
-	var EventBus = bless({
+	var EventBus = common.bless('util.EventBus', {
 		constructor: function () {
 			this.bus = $({});
 		},
@@ -107,7 +14,11 @@ define([
 			return this.bus.on(eventName, listener);
 		},
 		remove:      function (eventName, listener) {
-			this.bus.off(eventName, listener);
+			if (listener) {
+				this.bus.off(eventName, listener);
+			} else {
+				this.bus.off(eventName);
+			}
 		},
 		fire:        function (eventName, payload) {
 			this.bus.trigger(eventName, payload);
@@ -115,99 +26,96 @@ define([
 	});
 	var eventBus = new EventBus();
 
-	var BaseModel = bless({
-		constructor: function (resource) {
+	var BaseModel = common.bless('util.BaseModel', {
+		constructor:   function (uri, existing) {
 			this.busy = ko.observable(false);
-			this.resource = resource;
+			this.uri = new URI(uri);
+			this.existing = existing;
 		},
-		setBusy:     function (busy) {
-			eventBus.fire('busy', busy);
+		bind:          function ($html) {
+			ko.applyBindings(this, $html[0]);
+		},
+		_setBusy:      function (busy) {
 			this.busy(busy);
+			eventBus.fire('busy', busy);
 		},
-		refresh:     function () {
-			this.setBusy(true);
-			var self = this;
-			$.ajax(this.resource.url(), {
-				complete: function () {
-					self.setBusy(false);
-				},
-				error:    function (xhr) {
-					eventBus.fire('error', {status: xhr.status, msg: xhr.statusText});
-				},
-				success:  function (data) {
-					self.setData(data);
-				}
-			});
+		_ajaxComplete: function () {
+			this._setBusy(false);
 		},
-		save:        function () {
-			this.setBusy(true);
-			var self = this;
-			$.ajax(this.resource.url(), {
-				contentType: 'application/json',
-				data:        JSON.stringify(this.getData()),
-				type:        'POST',
-				complete:    function () {
-					self.setBusy(false);
-				},
-				error:       function (xhr) {
-					eventBus.fire('error', {status: xhr.status, msg: xhr.statusText});
-				},
-				success:     function () {
-					location.goUp();
-				}
-			});
+		_ajaxError:    function (xhr) {
+			eventBus.fire('error', {response: xhr});
 		},
-		del:         function () {
-			this.setBusy(true);
-			var self = this;
-			$.ajax(this.resource.url(), {
+		refresh:       function () {
+			if (this.existing) {
+				this._setBusy(true);
+				$.ajax(this.uri.url(), {
+					context:  this,
+					complete: this._ajaxComplete,
+					error:    this._ajaxError,
+					success:  this.setData
+				});
+			}
+		},
+		save:          function () {
+			var data = this.getData();
+			if (data) {
+				this._setBusy(true);
+				$.ajax(this.uri.url(), {
+					context:     this,
+					contentType: 'application/json',
+					data:        JSON.stringify(data),
+					type:        'POST',
+					complete:    this._ajaxComplete,
+					error:       this._ajaxError,
+					success:     this._saveSuccess
+				});
+			} else {
+				this._saveSuccess();
+			}
+		},
+		_saveSuccess:  function () {
+			URI.goUp();
+		},
+		del:           function () {
+			this._setBusy(true);
+			$.ajax(this.uri.url(), {
+				context:  this,
 				type:     'DELETE',
-				complete: function () {
-					self.setBusy(false);
-				},
-				error:    function (xhr) {
-					eventBus.fire('error', {status: xhr.status, msg: xhr.statusText});
-				},
-				success:  function () {
-					location.goUp();
-				}
+				complete: this._ajaxComplete,
+				error:    this._ajaxError,
+				success:  this._delSuccess
 			});
+		},
+		_delSuccess:   function () {
+			URI.goUp();
 		}
 	});
 
-	var BasePage = bless({
-		constructor:  function (prevPage, layoutName, layoutHtml) {
-			if (!prevPage || layoutName != prevPage.layoutName) {
+	var BasePage = common.bless('util.BasePage', {
+		constructor: function (prevPage, layoutName, layoutHtml) {
+			if (!prevPage || layoutName != prevPage.__layoutName) {
 				$('#' + config.dom.rootId).empty().append(layoutHtml);
 			}
-			this.layoutName = layoutName;
-			this.widgets = {};
-			location(window.location.hash);
+			this.__layoutName = layoutName;
+			this.__models = {};
 		},
-		createWidget: function (prevPage, widgetDef, resource, $parent) {
-			var widget = undefined;
-			if (prevPage) {
-				widget = prevPage.getWidget(widgetDef.name);
+		_addModel:   function (prevPage, clazz, uri, existing) {
+			var model = this.__models[clazz._name];
+			if (!model && prevPage) {
+				model = prevPage.__models[clazz._name];
 			}
-			if (!widget) {
-				widget = {model: new widgetDef.Model(resource)};
+			if (!model) {
+				model = new clazz(uri, existing);
 			}
-			widget.$view = $(widgetDef.view).appendTo($parent);
-			ko.applyBindings(widget.model, widget.$view[0]);
-			this.widgets[widgetDef.name] = widget;
-			return widget;
-		},
-		getWidget:    function (name) {
-			return this.widgets[name];
+			this.__models[clazz._name] = model;
+			return model;
 		}
 	});
 
 	return {
-		bless:     bless,
-		location:  location,
-		resource:  resource,
 		eventBus:  eventBus,
 		BaseModel: BaseModel,
 		BasePage:  BasePage
 	};
+
 });
