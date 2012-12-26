@@ -3,6 +3,7 @@ define([
 	'knockout',
 	'bootstrap'
 ], function ($, ko) {
+
 	ko.bindingHandlers.bsCollapse = {
 		init:   function (elem, value) {
 			$(elem).collapse({toggle: false});
@@ -17,5 +18,6 @@ define([
 				$elem.collapse('toggle');
 			}
 		}
-	}
+	};
+
 });

@@ -3,6 +3,7 @@ define([
 	'knockout',
 	'bootstrap'
 ], function ($, ko) {
+
 	ko.bindingHandlers.bsToggleBtn = {
 		init:   function (elem, value) {
 			var $elem = $(elem);
@@ -26,4 +27,5 @@ define([
 			}
 		}
 	};
+
 });

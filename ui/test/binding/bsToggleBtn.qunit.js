@@ -3,6 +3,7 @@ define([
 	'knockout',
 	'binding/bsToggleBtn'
 ], function ($, ko) {
+
 	module('binding/bsToggleBtn');
 
 	test('binding', function () {
@@ -29,4 +30,5 @@ define([
 		equal(model.state(), false, 'observable is reset');
 		$root.remove();
 	});
+
 });

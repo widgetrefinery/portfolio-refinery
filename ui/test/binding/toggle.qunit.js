@@ -3,6 +3,7 @@ define([
 	'knockout',
 	'binding/toggle'
 ], function ($, ko) {
+
 	module('binding/toggle');
 
 	test('binding', function () {
@@ -20,4 +21,5 @@ define([
 		equal(model.state(), true, 'state toggled to true');
 		$root.remove();
 	});
+
 });

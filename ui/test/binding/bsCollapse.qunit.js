@@ -3,6 +3,7 @@ define([
 	'knockout',
 	'binding/bsCollapse'
 ], function ($, ko) {
+
 	module('binding/bsCollapse');
 
 	test('binding', function () {
@@ -64,4 +65,5 @@ define([
 		$root.remove();
 		$.support.transition = transitionBak;
 	});
+
 });
