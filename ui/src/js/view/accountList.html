@@ -1,0 +1,19 @@
+<ul class="nav nav-list">
+	<li data-bind="css:{active:addAccountUri.active()}"><a data-bind="attr:{href:addAccountUri.href}">New Account</a></li>
+	<li class="nav-header" data-bind="toggle:show.activeAccounts">Accounts</li>
+	<li data-bind="bsCollapse:show.activeAccounts">
+		<ul class="nav nav-list" data-bind="foreach:accounts">
+			<!-- ko if:active -->
+			<li data-bind="css:{active:uri.active()}"><a data-bind="attr:{href:uri.href},text:name"></a></li>
+			<!-- /ko -->
+		</ul>
+	</li>
+	<li class="nav-header" data-bind="toggle:show.inactiveAccounts">Inactive Accounts</li>
+	<li data-bind="bsCollapse:show.inactiveAccounts">
+		<ul class="nav nav-list" data-bind="foreach:accounts">
+			<!-- ko ifnot:active -->
+			<li data-bind="css:{active:uri.active()}"><a data-bind="attr:{href:uri.href},text:name"></a></li>
+			<!-- /ko -->
+		</ul>
+	</li>
+</ul>
