@@ -17,6 +17,11 @@ define([
 			this.addEntryUri = new URI();
 			this.name = ko.observable();
 			this.active = ko.observable();
+			this.selectedEntry = ko.observable();
+			this.selectedEntryHref = ko.computed(function () {
+				var entry = self.selectedEntry();
+				return entry ? entry.uri.href() : undefined;
+			});
 		},
 		getData:     function () {
 			return {
