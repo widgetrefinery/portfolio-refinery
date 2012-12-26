@@ -2,30 +2,29 @@ define([
 	'knockout',
 	'knockout.mapping',
 	'util/app',
-	'util/config',
-	'text!view/accounts.html'
-], function (ko, kom, app, config, view) {
-	var Accounts = app.bless(app.BaseModel, {
-		constructor:    function () {
-			this.supr(app.resource(config.url.accountList));
-			this.addAccountResource = app.resource(undefined);
+	'util/common',
+	'util/uri'
+], function (ko, kom, app, common, URI) {
+
+	return common.bless(app.BaseModel, 'model.Accounts', {
+		constructor:    function (uri, existing) {
+			this._super(uri, existing);
+			this.addAccountUri = new URI();
 			this.accounts = kom.fromJS([]);
-			this.showAll = ko.observable(false);
+			this.show = {
+				activeAccounts:   ko.observable(true),
+				inactiveAccounts: ko.observable(false)
+			};
 		},
 		setData:        function (data) {
-			var addAccountUrl = undefined;
-			var hasAccounts = false;
-			if (data) {
-				if (data.url) {
-					addAccountUrl = data.url.addAccount;
-				}
-				if (data.accounts) {
-					hasAccounts = true;
-					this._parseAccounts(data.accounts);
-				}
+			if (data.url) {
+				this.addAccountUri.url(data.url.addAccount);
+			} else {
+				this.addAccountUri.url(undefined);
 			}
-			this.addAccountResource.url(addAccountUrl);
-			if (!hasAccounts) {
+			if (data.accounts) {
+				this._parseAccounts(data.accounts);
+			} else {
 				this.accounts.removeAll();
 			}
 		},
@@ -33,7 +32,6 @@ define([
 			accounts.sort(function (a, b) {
 				return a.name.localeCompare(b.name);
 			});
-			var self = this;
 			kom.fromJS(accounts, {
 				'': {
 					key:    function (account) {
@@ -41,10 +39,7 @@ define([
 					},
 					create: function (options) {
 						var account = kom.fromJS(options.data);
-						account.resource = app.resource(options.data.url.self);
-						account.show = ko.computed(function () {
-							return account.active() || self.showAll();
-						});
+						account.uri = new URI(options.data.url.self);
 						return account;
 					}
 				}
@@ -52,9 +47,4 @@ define([
 		}
 	});
 
-	return {
-		Model: Accounts,
-		name:  'accounts',
-		view:  view
-	};
 });

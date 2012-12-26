@@ -2,13 +2,19 @@ define([
 	'jquery',
 	'knockout',
 	'util/app',
-	'text!view/account.html'
-], function ($, ko, app, view) {
-	var Account = app.bless(app.BaseModel, {
-		constructor: function (resource) {
-			this.supr(resource);
-			this.editResource = app.resource();
-			this.addEntryResource = app.resource();
+	'util/common',
+	'util/uri'
+], function ($, ko, app, common, URI) {
+
+	return common.bless(app.BaseModel, 'model.Account', {
+		constructor: function (uri, existing) {
+			this._super(uri, existing);
+			var self = this;
+			this.editHref = ko.computed(function () {
+				var href = self.uri.href();
+				return href ? href + '/edit' : undefined;
+			});
+			this.addEntryUri = new URI();
 			this.name = ko.observable();
 			this.active = ko.observable();
 		},
@@ -19,17 +25,16 @@ define([
 			};
 		},
 		setData:     function (data) {
-			this.resource.url(data.url.self);
-			this.editResource.url(data.url.self + '/edit');
-			this.addEntryResource.url(data.url.addEntry);
+			if (data.url) {
+				this.uri.url(data.url.self);
+				this.addEntryUri.url(data.url.addEntry);
+			} else {
+				this.uri.url(undefined);
+				this.addEntryUri.url(undefined);
+			}
 			this.name(data.name);
 			this.active(data.active);
 		}
 	});
 
-	return {
-		Model: Account,
-		name:  'account',
-		view:  view
-	};
 });
