@@ -78,8 +78,10 @@ define([
 			URI.current(this.uri.href());
 		},
 		_saveError:    function (xhr) {
-			if (302 == xhr.status) {
-				URI.current(new URI(xhr.getResponseHeader('location')).href());
+			if (!this.__existing && 302 == xhr.status) {
+				this.__existing = true;
+				this.uri.url(xhr.getResponseHeader('location'));
+				this._saveSuccess();
 			} else {
 				this._ajaxError(xhr);
 			}

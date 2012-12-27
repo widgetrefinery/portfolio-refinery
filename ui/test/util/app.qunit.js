@@ -106,7 +106,7 @@ require([
 				this.data = data;
 			}
 		});
-		var testModel = new TestModel({uri: '/dummy/url', existing: true, parentDepth: -1});
+		var testModel = new TestModel({uri: '/dummy/url', existing: false, parentDepth: -1});
 
 		var goodUrl = '/dummy/util/BaseModel/200';
 		var newUrl = '/dummy/util/BaseModel/302';
@@ -133,7 +133,7 @@ require([
 			data:         JSON.stringify({msg: 'new data'}),
 			type:         'POST',
 			headers:      {
-				Location: '/dummy/util/BaseModel/200'
+				Location: '/real/url'
 			},
 			status:       302,
 			responseTime: 0
@@ -163,10 +163,10 @@ require([
 		app.eventBus.add('error', listener);
 
 		var testCases = [
+			{url: newUrl, op: 'save', data: {msg: 'new data'}, current: '#real/url', error: false, newUrl: '/real/url'},
 			{url: goodUrl, op: 'refresh', data: {msg: 'good response'}, current: '#parent/child', error: false},
 			{url: badUrl, op: 'refresh', data: {msg: 'new data'}, current: '#parent/child', error: true},
 			{url: goodUrl, op: 'save', data: {msg: 'new data'}, current: '#dummy/util/BaseModel/200', error: false},
-			{url: newUrl, op: 'save', data: {msg: 'new data'}, current: '#dummy/util/BaseModel/200', error: false},
 			{url: badUrl, op: 'save', data: {msg: 'new data'}, current: '#parent/child', error: true},
 			{url: goodUrl, op: 'del', data: {msg: 'new data'}, current: '#dummy/util/BaseModel', error: false},
 			{url: badUrl, op: 'del', data: {msg: 'new data'}, current: '#parent/child', error: true}
@@ -183,6 +183,10 @@ require([
 		}
 
 		function check() {
+			equal(testModel.__existing, true, 'existing flag is set after ' + testCases[0].op);
+			if (testCases[0].newUrl) {
+				equal(testModel.uri.url(), testCases[0].newUrl, 'url is set after ' + testCases[0].op);
+			}
 			equal(testModel.busy(), false, 'busy flag is reset after ' + testCases[0].op);
 			deepEqual(testModel.data, testCases[0].data, 'json data is set after ' + testCases[0].op);
 			equal(URI.current(), testCases[0].current);
