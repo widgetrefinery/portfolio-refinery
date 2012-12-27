@@ -22,15 +22,6 @@ require([
 		equal(model.name(), 'account 1', 'checking name');
 		equal(model.active(), true, 'checking active');
 		deepEqual(model.getData(), {name: 'account 1', active: true}, 'checking getData()');
-		model.setData({
-			name:   'account 2',
-			active: false
-		});
-		equal(model.uri.url(), undefined, 'checking uri');
-		equal(model.editHref(), undefined, 'checking edit href');
-		equal(model.addEntryUri.url(), undefined, 'checking addEntry uri');
-		equal(model.name(), 'account 2', 'checking name');
-		equal(model.active(), false, 'checking active');
 	});
 
 });

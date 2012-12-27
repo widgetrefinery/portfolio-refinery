@@ -24,9 +24,6 @@ require([
 		equal(model.accounts()[0].uri.url(), '/account/1', 'accounts are sorted');
 		equal(model.accounts()[1].uri.url(), '/account/2', 'accounts are sorted');
 		equal(model.accounts()[2].uri.url(), '/account/3', 'accounts are sorted');
-		model.setData({});
-		equal(model.addAccountUri.url(), undefined, 'checking addAccount url');
-		equal(model.accounts().length, 0, 'account list cleared');
 	});
 
 });

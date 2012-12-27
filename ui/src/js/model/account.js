@@ -30,13 +30,8 @@ define([
 			};
 		},
 		setData:     function (data) {
-			if (data.url) {
-				this.uri.url(data.url.self);
-				this.addEntryUri.url(data.url.addEntry);
-			} else {
-				this.uri.url(undefined);
-				this.addEntryUri.url(undefined);
-			}
+			this.uri.url(data.url.self);
+			this.addEntryUri.url(data.url.addEntry);
 			this.name(data.name);
 			this.active(data.active);
 		}

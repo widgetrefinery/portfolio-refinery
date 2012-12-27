@@ -17,11 +17,7 @@ define([
 			};
 		},
 		setData:        function (data) {
-			if (data.url) {
-				this.addAccountUri.url(data.url.addAccount);
-			} else {
-				this.addAccountUri.url(undefined);
-			}
+			this.addAccountUri.url(data.url.addAccount);
 			if (data.accounts) {
 				this._parseAccounts(data.accounts);
 			} else {

@@ -16,12 +16,20 @@ require([
 		};
 		model.bind($html);
 		model.setData({
+			url:    {
+				self:     '/account/1',
+				addEntry: '/account/1/transaction/create'
+			},
 			name:   'test account',
 			active: true
 		});
 		equal($html.find('#account-name').val(), 'test account', 'name input');
 		equal($html.find('#account-active').attr('checked'), 'checked', 'active checkbox');
 		model.setData({
+			url:    {
+				self:     '/account/2',
+				addEntry: '/account/2/transaction/create'
+			},
 			name:   'test account 2',
 			active: false
 		});
