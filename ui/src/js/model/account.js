@@ -1,10 +1,9 @@
 define([
-	'jquery',
 	'knockout',
 	'util/app',
 	'util/common',
 	'util/uri'
-], function ($, ko, app, common, URI) {
+], function (ko, app, common, URI) {
 
 	return common.bless(app.BaseModel, 'model.Account', {
 		constructor: function (args) {
