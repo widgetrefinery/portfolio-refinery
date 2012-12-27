@@ -59,6 +59,14 @@ require([
 		})
 	});
 	$.mockjax({
+		url:     '/account/_',
+		type:    'POST',
+		headers: {
+			Location: '/account/2'
+		},
+		status:  302
+	});
+	$.mockjax({
 		url:    '/account/*',
 		type:   'POST',
 		status: 204

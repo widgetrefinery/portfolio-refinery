@@ -109,6 +109,7 @@ require([
 		var testModel = new TestModel({uri: '/dummy/url', existing: true, parentDepth: -1});
 
 		var goodUrl = '/dummy/util/BaseModel/200';
+		var newUrl = '/dummy/util/BaseModel/302';
 		var badUrl = '/dummy/util/BaseModel/401';
 		$.mockjax({
 			url:          goodUrl,
@@ -125,6 +126,16 @@ require([
 			data:         JSON.stringify({msg: 'new data'}),
 			type:         'POST',
 			status:       204,
+			responseTime: 0
+		});
+		$.mockjax({
+			url:          newUrl,
+			data:         JSON.stringify({msg: 'new data'}),
+			type:         'POST',
+			headers:      {
+				Location: '/dummy/util/BaseModel/200'
+			},
+			status:       302,
 			responseTime: 0
 		});
 		$.mockjax({
@@ -155,6 +166,7 @@ require([
 			{url: goodUrl, op: 'refresh', data: {msg: 'good response'}, current: '#parent/child', error: false},
 			{url: badUrl, op: 'refresh', data: {msg: 'new data'}, current: '#parent/child', error: true},
 			{url: goodUrl, op: 'save', data: {msg: 'new data'}, current: '#dummy/util/BaseModel/200', error: false},
+			{url: newUrl, op: 'save', data: {msg: 'new data'}, current: '#dummy/util/BaseModel/200', error: false},
 			{url: badUrl, op: 'save', data: {msg: 'new data'}, current: '#parent/child', error: true},
 			{url: goodUrl, op: 'del', data: {msg: 'new data'}, current: '#dummy/util/BaseModel', error: false},
 			{url: badUrl, op: 'del', data: {msg: 'new data'}, current: '#parent/child', error: true}

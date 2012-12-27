@@ -67,7 +67,7 @@ define([
 					data:        JSON.stringify(data),
 					type:        'POST',
 					complete:    this._ajaxComplete,
-					error:       this._ajaxError,
+					error:       this._saveError,
 					success:     this._saveSuccess
 				});
 			} else {
@@ -76,6 +76,13 @@ define([
 		},
 		_saveSuccess:  function () {
 			URI.current(this.uri.href());
+		},
+		_saveError:    function (xhr) {
+			if (302 == xhr.status) {
+				URI.current(new URI(xhr.getResponseHeader('location')).href());
+			} else {
+				this._ajaxError(xhr);
+			}
 		},
 		del:           function () {
 			this._setBusy(true);
