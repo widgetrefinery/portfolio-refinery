@@ -18,11 +18,18 @@ define([
 	};
 
 	var subUri = function (uri, depth) {
-		var parts = uri.substr(1).split('/', depth + 1);
-		if (parts.length < depth) {
-			throw 'uri is too shallow: ' + uri + ', ' + depth;
+		var parts = uri.substr(1).split('/');
+		if (0 <= depth) {
+			if (parts.length < depth) {
+				throw 'uri is too shallow: ' + uri + ', ' + depth;
+			}
+			return uri[0] + parts.slice(0, depth).join('/');
+		} else {
+			if (parts.length < -depth) {
+				throw 'uri is too shallow: ' + uri + ', ' + depth;
+			}
+			return uri[0] + parts.slice(0, parts.length + depth).join('/');
 		}
-		return uri[0] + parts.slice(0, depth).join('/');
 	};
 
 	var URI = function (uri) {

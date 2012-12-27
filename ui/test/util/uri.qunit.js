@@ -23,6 +23,7 @@ require([
 	});
 
 	test('subUri', function () {
+		//positive depths
 		equal(URI.subUri('/a/nested/path', 0), '/', 'depth of 0');
 		equal(URI.subUri('#a/nested/path', 1), '#a', 'depth of 1');
 		equal(URI.subUri('/a/nested/path', 2), '/a/nested', 'depth of 2');
@@ -34,6 +35,17 @@ require([
 			error = e;
 		}
 		equal(error, 'uri is too shallow: /a/nested/path, 4', 'depth of 4');
+		//negative depths
+		equal(URI.subUri('/a/nested/path', -1), '/a/nested', 'depth of -1');
+		equal(URI.subUri('#a/nested/path', -2), '#a', 'depth of -2');
+		equal(URI.subUri('/a/nested/path', -3), '/', 'depth of -3');
+		error = undefined;
+		try {
+			URI.subUri('#a/nested/path', -4);
+		} catch (e) {
+			error = e;
+		}
+		equal(error, 'uri is too shallow: #a/nested/path, -4', 'depth of -4');
 	});
 
 	test('URI', function () {
