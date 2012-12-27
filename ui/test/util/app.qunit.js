@@ -154,7 +154,7 @@ require([
 		var testCases = [
 			{url: goodUrl, op: 'refresh', data: {msg: 'good response'}, current: '#parent/child', error: false},
 			{url: badUrl, op: 'refresh', data: {msg: 'new data'}, current: '#parent/child', error: true},
-			{url: goodUrl, op: 'save', data: {msg: 'new data'}, current: '#dummy/util/BaseModel', error: false},
+			{url: goodUrl, op: 'save', data: {msg: 'new data'}, current: '#dummy/util/BaseModel/200', error: false},
 			{url: badUrl, op: 'save', data: {msg: 'new data'}, current: '#parent/child', error: true},
 			{url: goodUrl, op: 'del', data: {msg: 'new data'}, current: '#dummy/util/BaseModel', error: false},
 			{url: badUrl, op: 'del', data: {msg: 'new data'}, current: '#parent/child', error: true}

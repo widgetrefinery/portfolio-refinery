@@ -3,9 +3,10 @@ require([
 	'page/account',
 	'page/accountEdit',
 	'page/accountList',
+	'page/accountNew',
 	'util/uri',
 	'jquery.mockjax'
-], function ($, Account, AccountEdit, AccountList, URI) {
+], function ($, Account, AccountEdit, AccountList, AccountNew, URI) {
 
 	module('page');
 
@@ -43,7 +44,8 @@ require([
 		var pages = [
 			{clazz: Account, href: '#account/1'},
 			{clazz: AccountEdit, href: '#account/1'},
-			{clazz: AccountList, href: '#account'}
+			{clazz: AccountList, href: '#account'},
+			{clazz: AccountNew, href: '#account/create'}
 		];
 		var page;
 		part1();

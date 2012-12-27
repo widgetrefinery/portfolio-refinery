@@ -75,7 +75,7 @@ define([
 			}
 		},
 		_saveSuccess:  function () {
-			URI.current(URI.subUri(this.uri.href(), this.__parentDepth));
+			URI.current(this.uri.href());
 		},
 		del:           function () {
 			this._setBusy(true);

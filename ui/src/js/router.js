@@ -16,6 +16,7 @@ define([
 
 	var router = sammy(function () {
 		this.get('#account', loadPage('page/accountList'));
+		this.get('#account/_', loadPage('page/accountNew'));
 		this.get('#account/:id', loadPage('page/account'));
 		this.get('#account/:id/edit', loadPage('page/accountEdit'));
 		this.get('', function () {

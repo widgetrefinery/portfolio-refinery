@@ -35,7 +35,7 @@ require([
 		responseText: JSON.stringify({
 			url:      {
 				self:       '/account',
-				addAccount: '/account/create'
+				addAccount: '/account/_'
 			},
 			accounts: [
 				{url: {self: '/account/1'}, name: 'Account 1', active: false},
@@ -52,7 +52,7 @@ require([
 		responseText: JSON.stringify({
 			url:    {
 				self:     '/account/2',
-				addEntry: '/account/2/transaction/create'
+				addEntry: '/account/2/transaction/_'
 			},
 			name:   'Account 2',
 			active: true
