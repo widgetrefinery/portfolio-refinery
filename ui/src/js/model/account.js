@@ -7,8 +7,8 @@ define([
 ], function ($, ko, app, common, URI) {
 
 	return common.bless(app.BaseModel, 'model.Account', {
-		constructor: function (uri, existing) {
-			this._super(uri, existing);
+		constructor: function (args) {
+			this._super(args);
 			var self = this;
 			this.editHref = ko.computed(function () {
 				var href = self.uri.href();

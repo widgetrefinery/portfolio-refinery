@@ -9,7 +9,7 @@ require([
 
 	test('binding', function () {
 		var $html = $(html).hide().appendTo($('body'));
-		var model = new Accounts('/dummy/url', true);
+		var model = new Accounts({uri: '/dummy/url', existing: true, parentDepth: -1});
 		model.bind($html);
 		model.setData({
 			url:      {

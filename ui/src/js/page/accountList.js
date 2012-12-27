@@ -10,7 +10,11 @@ define([
 
 	return common.bless(Parent, 'page.AccountList', {
 		setLeft: function (prevPage, $container) {
-			var accounts = this._addModel(prevPage, Accounts, URI.subUri(URI.current(), 1), true);
+			var accounts = this._addModel(prevPage, Accounts, {
+				uri:         URI.subUri(URI.current(), 1),
+				existing:    true,
+				parentDepth: -1
+			});
 			var $accountListHtml = $(accountListHtml).appendTo($container);
 			accounts.bind($accountListHtml);
 			accounts.refresh();

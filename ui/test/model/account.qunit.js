@@ -7,7 +7,7 @@ require([
 	module('model/account');
 
 	test('data', function () {
-		var model = new Account('/dummy/url', true);
+		var model = new Account({uri: '/dummy/url', existing: true, parentDepth: -1});
 		model.setData({
 			url:    {
 				self:     '/dummy/account/1',

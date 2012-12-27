@@ -7,8 +7,8 @@ define([
 ], function (ko, kom, app, common, URI) {
 
 	return common.bless(app.BaseModel, 'model.Accounts', {
-		constructor:    function (uri, existing) {
-			this._super(uri, existing);
+		constructor:    function (args) {
+			this._super(args);
 			this.addAccountUri = new URI();
 			this.accounts = kom.fromJS([]);
 			this.show = {

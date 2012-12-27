@@ -4,19 +4,6 @@ define([
 
 	var current = ko.observable('');
 
-	var goUp = function () {
-		var href = current();
-		if (href) {
-			var ndx = href.lastIndexOf('/');
-			if (-1 != ndx) {
-				href = href.substring(0, ndx);
-			} else {
-				href = '#';
-			}
-			current(href);
-		}
-	};
-
 	var subUri = function (uri, depth) {
 		var parts = uri.substr(1).split('/');
 		if (0 <= depth) {
@@ -62,7 +49,6 @@ define([
 	};
 
 	URI.current = current;
-	URI.goUp = goUp;
 	URI.subUri = subUri;
 	return URI;
 

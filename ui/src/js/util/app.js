@@ -27,10 +27,11 @@ define([
 	var eventBus = new EventBus();
 
 	var BaseModel = common.bless('util.BaseModel', {
-		constructor:   function (uri, existing) {
+		constructor:   function (args) {
 			this.busy = ko.observable(false);
-			this.uri = new URI(uri);
-			this.existing = existing;
+			this.uri = new URI(args.uri);
+			this.__existing = args.existing;
+			this.__parentDepth = args.parentDepth;
 		},
 		bind:          function ($html) {
 			ko.applyBindings(this, $html[0]);
@@ -46,7 +47,7 @@ define([
 			eventBus.fire('error', {response: xhr});
 		},
 		refresh:       function () {
-			if (this.existing) {
+			if (this.__existing) {
 				this._setBusy(true);
 				$.ajax(this.uri.url(), {
 					context:  this,
@@ -74,7 +75,7 @@ define([
 			}
 		},
 		_saveSuccess:  function () {
-			URI.goUp();
+			URI.current(URI.subUri(this.uri.href(), this.__parentDepth));
 		},
 		del:           function () {
 			this._setBusy(true);
@@ -87,7 +88,7 @@ define([
 			});
 		},
 		_delSuccess:   function () {
-			URI.goUp();
+			URI.current(URI.subUri(this.uri.href(), this.__parentDepth));
 		}
 	});
 
@@ -99,13 +100,13 @@ define([
 			this.__layoutName = layoutName;
 			this.__models = {};
 		},
-		_addModel:   function (prevPage, clazz, uri, existing) {
+		_addModel:   function (prevPage, clazz, args) {
 			var model = this.__models[clazz._name];
 			if (!model && prevPage) {
 				model = prevPage.__models[clazz._name];
 			}
 			if (!model) {
-				model = new clazz(uri, existing);
+				model = new clazz(args);
 			}
 			this.__models[clazz._name] = model;
 			return model;

@@ -10,7 +10,11 @@ define([
 
 	return common.bless(Parent, 'page.Account', {
 		setCenter:   function (prevPage, $container) {
-			var account = this._addModel(prevPage, Account, URI.subUri(URI.current(), 2), this._isExisting());
+			var account = this._addModel(prevPage, Account, {
+				uri:         URI.subUri(URI.current(), 2),
+				existing:    this._isExisting(),
+				parentDepth: -1
+			});
 			var $accountToolbarHtml = $(accountToolbarHtml).appendTo($container);
 			account.bind($accountToolbarHtml);
 			account.refresh();

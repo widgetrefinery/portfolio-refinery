@@ -9,7 +9,7 @@ require([
 	test('binding', function () {
 		var $html = $(html).hide().appendTo($('body'));
 		var saveInvoked = false;
-		var model = new Account('/dummy/url', true);
+		var model = new Account({uri: '/dummy/url', existing: true, parentDepth: -1});
 		model.save = function () {
 			//intercept and log calls to save()
 			saveInvoked = true;

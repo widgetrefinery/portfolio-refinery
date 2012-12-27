@@ -106,7 +106,7 @@ require([
 				this.data = data;
 			}
 		});
-		var testModel = new TestModel('/dummy/url', true);
+		var testModel = new TestModel({uri: '/dummy/url', existing: true, parentDepth: -1});
 
 		var goodUrl = '/dummy/util/BaseModel/200';
 		var badUrl = '/dummy/util/BaseModel/401';
@@ -142,6 +142,7 @@ require([
 				responseTime: 0
 			});
 		});
+		var ajaxTimeout = 50;
 
 		var events = [];
 		var listener = function (e, data) {
@@ -150,81 +151,50 @@ require([
 		app.eventBus.add('busy', listener);
 		app.eventBus.add('error', listener);
 
-		setupAndCheck(goodUrl, 'refresh', part1);
+		var testCases = [
+			{url: goodUrl, op: 'refresh', data: {msg: 'good response'}, current: '#parent/child', error: false},
+			{url: badUrl, op: 'refresh', data: {msg: 'new data'}, current: '#parent/child', error: true},
+			{url: goodUrl, op: 'save', data: {msg: 'new data'}, current: '#dummy/util/BaseModel', error: false},
+			{url: badUrl, op: 'save', data: {msg: 'new data'}, current: '#parent/child', error: true},
+			{url: goodUrl, op: 'del', data: {msg: 'new data'}, current: '#dummy/util/BaseModel', error: false},
+			{url: badUrl, op: 'del', data: {msg: 'new data'}, current: '#parent/child', error: true}
+		];
+		setup();
 
-		function setupAndCheck(url, op, check) {
+		function setup() {
 			events = [];
-			testModel.uri.url(url);
+			testModel.uri.url(testCases[0].url);
 			testModel.data = {msg: 'new data'};
 			URI.current('#parent/child');
-			testModel[op]();
-			setTimeout(check, 50);
+			testModel[testCases[0].op]();
+			setTimeout(check, ajaxTimeout);
 		}
 
-		function part1() {
-			equal(testModel.busy(), false, 'busy flag is reset');
-			deepEqual(testModel.data, {msg: 'good response'}, 'json data is set');
-			deepEqual(events, [
-				['busy', true],
-				['busy', false]
-			], 'checking fired events');
-			setupAndCheck(badUrl, 'refresh', part2);
-		}
-
-		function part2() {
-			equal(testModel.busy(), false, 'busy flag is reset');
-			deepEqual(testModel.data, {msg: 'new data'}, 'json data did not change');
-			deepEqual(events[0], ['busy', true], 'checking fired event 0');
-			equal(events[1][0], 'error', 'checking fired event 1');
-			equal(events[1][1].response.status, 401, 'checking fired event 1');
-			equal(events[1][1].response.statusText, 'fake error', 'checking fired event 1');
-			deepEqual(events[2], ['busy', false], 'checking fired event 2');
-			setupAndCheck(goodUrl, 'save', part3);
-		}
-
-		function part3() {
-			equal(testModel.busy(), false, 'busy flag is reset');
-			equal(URI.current(), '#parent', 'location updated');
-			deepEqual(events, [
-				['busy', true],
-				['busy', false]
-			], 'checking fired events');
-			setupAndCheck(badUrl, 'save', part4);
-		}
-
-		function part4() {
-			equal(testModel.busy(), false, 'busy flag is reset');
-			equal(URI.current(), '#parent/child', 'location unchanged');
-			deepEqual(events[0], ['busy', true], 'checking fired event 0');
-			equal(events[1][0], 'error', 'checking fired event 1');
-			equal(events[1][1].response.status, 401, 'checking fired event 1');
-			equal(events[1][1].response.statusText, 'fake error', 'checking fired event 1');
-			deepEqual(events[2], ['busy', false], 'checking fired event 2');
-			setupAndCheck(goodUrl, 'del', part5);
-		}
-
-		function part5() {
-			equal(testModel.busy(), false, 'busy flag is reset');
-			equal(URI.current(), '#parent', 'location updated');
-			deepEqual(events, [
-				['busy', true],
-				['busy', false]
-			], 'checking fired events');
-			setupAndCheck(badUrl, 'del', part6);
-		}
-
-		function part6() {
-			equal(testModel.busy(), false, 'busy flag is reset');
-			equal(URI.current(), '#parent/child', 'location unchanged');
-			deepEqual(events[0], ['busy', true], 'checking fired event 0');
-			equal(events[1][0], 'error', 'checking fired event 1');
-			equal(events[1][1].response.status, 401, 'checking fired event 1');
-			equal(events[1][1].response.statusText, 'fake error', 'checking fired event 1');
-			deepEqual(events[2], ['busy', false], 'checking fired event 2');
-			app.eventBus.remove('busy');
-			app.eventBus.remove('error');
-			$.mockjaxClear();
-			start();
+		function check() {
+			equal(testModel.busy(), false, 'busy flag is reset after ' + testCases[0].op);
+			deepEqual(testModel.data, testCases[0].data, 'json data is set after ' + testCases[0].op);
+			equal(URI.current(), testCases[0].current);
+			if (testCases[0].error) {
+				deepEqual(events[0], ['busy', true], 'checking fired event 0');
+				equal(events[1][0], 'error', 'checking fired event 1');
+				equal(events[1][1].response.status, 401, 'checking fired event 1');
+				equal(events[1][1].response.statusText, 'fake error', 'checking fired event 1');
+				deepEqual(events[2], ['busy', false], 'checking fired event 2');
+			} else {
+				deepEqual(events, [
+					['busy', true],
+					['busy', false]
+				], 'checking fired events');
+			}
+			testCases.shift();
+			if (testCases.length) {
+				setup();
+			} else {
+				app.eventBus.remove('busy');
+				app.eventBus.remove('error');
+				$.mockjaxClear();
+				start();
+			}
 		}
 	});
 
@@ -238,22 +208,20 @@ require([
 		page = new app.BasePage(page, 'layout2', 'a different layout');
 		equal($root.text(), 'a different layout', 'page replaced the layout');
 		//create a page with 1 model
-		var TestModel = function (uri, existing) {
-			this.uri = uri;
-			this.existing = existing;
+		var TestModel = function (args) {
+			this.args = args;
 		};
 		TestModel._name = 'testModel1';
-		var model = page._addModel(undefined, TestModel, '/dummy/uri', true);
+		var model = page._addModel(undefined, TestModel, {uri: '/dummy/uri', existing: true});
 		equal(page.__models['testModel1'], model, 'page has cached our model');
-		equal(model.uri, '/dummy/uri', 'uri passed to model constructor');
-		equal(model.existing, true, 'existing passed to model constructor');
+		deepEqual(model.args, {uri: '/dummy/uri', existing: true}, 'model args passed to constructor');
 		//create the same model
-		model = page._addModel(page, TestModel, '/dummy/uri2', false);
-		equal(model.uri, '/dummy/uri', 'reused existing model');
+		model = page._addModel(page, TestModel, {uri: '/dummy/uri2', existing: false});
+		deepEqual(model.args, {uri: '/dummy/uri', existing: true}, 'reused existing model');
 		//create a different model
 		TestModel._name = 'testModel2';
-		model = page._addModel(page, TestModel, '/dummy/uri2', false);
-		equal(model.uri, '/dummy/uri2', 'new model created');
+		model = page._addModel(page, TestModel, {uri: '/dummy/uri2', existing: false});
+		deepEqual(model.args, {uri: '/dummy/uri2', existing: false}, 'new model created');
 		$root.remove();
 	});
 

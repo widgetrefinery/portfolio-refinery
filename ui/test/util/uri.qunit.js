@@ -4,24 +4,6 @@ require([
 
 	module('util/uri');
 
-	test('goUp', function () {
-		URI.current(undefined);
-		URI.goUp();
-		equal(URI.current(), undefined, 'goUp() from undefined is still undefined');
-		URI.current('');
-		URI.goUp();
-		equal(URI.current(), '', 'goUp() from empty string is still empty string');
-		URI.current('#');
-		URI.goUp();
-		equal(URI.current(), '#', 'goUp() from # is #');
-		URI.current('#root');
-		URI.goUp();
-		equal(URI.current(), '#', 'goUp() from #root is #');
-		URI.current('#bread/crumb');
-		URI.goUp();
-		equal(URI.current(), '#bread', 'goUp() from #bread/crumb is #bread');
-	});
-
 	test('subUri', function () {
 		//positive depths
 		equal(URI.subUri('/a/nested/path', 0), '/', 'depth of 0');
