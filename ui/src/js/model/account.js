@@ -16,7 +16,7 @@ define([
 			});
 			this.addEntryUri = new URI();
 			this.name = ko.observable();
-			this.active = ko.observable();
+			this.active = ko.observable(true);
 			this.selectedEntry = ko.observable();
 			this.selectedEntryHref = ko.computed(function () {
 				var entry = self.selectedEntry();
