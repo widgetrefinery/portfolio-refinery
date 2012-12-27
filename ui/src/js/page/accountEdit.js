@@ -1,19 +1,16 @@
 define([
 	'jquery',
-	'knockout',
-	'model/account',
 	'page/account',
 	'util/app',
+	'util/common',
 	'text!view/accountEdit.html'
-], function ($, ko, account, Parent, app, view) {
-	return app.bless(Parent, {
-		_getAccountHref: function () {
-			var href = app.location();
-			return href.substring(0, href.length - '/edit'.length);
-		},
-		_renderBody:     function ($container) {
-			var $view = $(view).appendTo($container);
-			ko.applyBindings(this.getWidget(account.name).model, $view[0]);
+], function ($, Parent, app, common, accountEditHtml) {
+
+	return common.bless(Parent, 'page.AccountEdit', {
+		_renderBody: function (account, $container) {
+			var $accountEditHtml = $(accountEditHtml).appendTo($container);
+			account.bind($accountEditHtml);
 		}
 	});
+
 });

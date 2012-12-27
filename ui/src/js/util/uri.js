@@ -17,6 +17,14 @@ define([
 		}
 	};
 
+	var subUri = function (uri, depth) {
+		var parts = uri.substr(1).split('/', depth + 1);
+		if (parts.length < depth) {
+			throw 'uri is too shallow: ' + uri + ', ' + depth;
+		}
+		return uri[0] + parts.slice(0, depth).join('/');
+	};
+
 	var URI = function (uri) {
 		if (uri && '#' == uri.substr(0, 1)) {
 			uri = '/' + uri.substr(1);
@@ -48,6 +56,7 @@ define([
 
 	URI.current = current;
 	URI.goUp = goUp;
+	URI.subUri = subUri;
 	return URI;
 
 });

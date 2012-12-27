@@ -1,24 +1,27 @@
 define([
+	'jquery',
 	'model/account',
-	'model/accounts',
-	'page/2panel',
-	'util/app'
-], function (account, accounts, Parent, app) {
-	return app.bless(Parent, {
-		setLeft:         function (prevPage, $container) {
-			var accountsWidget = this.createWidget(prevPage, accounts, undefined, $container);
-			accountsWidget.model.refresh();
+	'page/accountList',
+	'util/app',
+	'util/common',
+	'util/uri',
+	'text!view/accountToolbar.html'
+], function ($, Account, Parent, app, common, URI, accountToolbarHtml) {
+
+	return common.bless(Parent, 'page.Account', {
+		setCenter:   function (prevPage, $container) {
+			var account = this._addModel(prevPage, Account, URI.subUri(URI.current(), 2), this._isExisting());
+			var $accountToolbarHtml = $(accountToolbarHtml).appendTo($container);
+			account.bind($accountToolbarHtml);
+			account.refresh();
+			this._renderBody(account, $container);
 		},
-		setCenter:       function (prevPage, $container) {
-			var accountWidget = this.createWidget(prevPage, account, app.resource(this._getAccountHref()), $container);
-			accountWidget.model.refresh();
-			this._renderBody($container);
+		_isExisting: function () {
+			return true;
 		},
-		_getAccountHref: function () {
-			return app.location();
-		},
-		_renderBody:     function ($container) {
-			//subclass can add additional widgets
+		_renderBody: function (account, $container) {
+			//subclass can add additional views
 		}
 	});
+
 });
