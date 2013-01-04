@@ -228,7 +228,9 @@ require([
 			this.args = args;
 		};
 		TestModel._name = 'testModel1';
+		equal(page._hasModel(TestModel), false, 'page does not know about model');
 		var model = page._addModel(undefined, TestModel, {uri: '/dummy/uri', existing: true});
+		equal(page._hasModel(TestModel), true, 'page knows about model');
 		equal(page.__models['testModel1'], model, 'page has cached our model');
 		deepEqual(model.args, {uri: '/dummy/uri', existing: true}, 'model args passed to constructor');
 		//create the same model

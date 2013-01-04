@@ -1,8 +1,7 @@
 require([
 	'jquery',
-	'knockout',
 	'model/accounts'
-], function ($, ko, Accounts) {
+], function ($, Accounts) {
 
 	module('model/accounts');
 

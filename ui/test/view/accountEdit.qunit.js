@@ -13,6 +13,7 @@ require([
 		model.save = function () {
 			//intercept and log calls to save()
 			saveInvoked = true;
+			return false;
 		};
 		model.bind($html);
 		model.setData({

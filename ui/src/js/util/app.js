@@ -119,6 +119,9 @@ define([
 			}
 			this.__models[clazz._name] = model;
 			return model;
+		},
+		_hasModel:   function (clazz) {
+			return clazz._name in this.__models;
 		}
 	});
 
