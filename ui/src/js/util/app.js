@@ -77,7 +77,7 @@ define([
 			}
 		},
 		_saveSuccess:  function () {
-			URI.current(this.uri.href());
+			this._goToParent();
 		},
 		_saveError:    function (xhr) {
 			if (!this.__existing && 302 == xhr.status) {
@@ -99,6 +99,12 @@ define([
 			});
 		},
 		_delSuccess:   function () {
+			this._goToParent();
+		},
+		cancel:        function () {
+			this._goToParent();
+		},
+		_goToParent:   function () {
 			URI.current(URI.subUri(this.uri.href(), this.__parentDepth));
 		}
 	});

@@ -94,5 +94,29 @@ require([
 			]
 		})
 	});
+	$.mockjax({
+		url:          '/investment/*',
+		type:         'GET',
+		contentType:  'application/json',
+		responseText: JSON.stringify({
+			url:    {
+				self: '/investment/2'
+			},
+			name:   'Investment 2',
+			symbol: 'VFITX',
+			type:   'BOND',
+			active: true
+		})
+	});
+	$.mockjax({
+		url:    '/investment/*',
+		type:   'POST',
+		status: 204
+	});
+	$.mockjax({
+		url:    '/investment/*',
+		type:   'DELETE',
+		status: 204
+	});
 	router.run();
 });

@@ -82,9 +82,10 @@ require([
 		deepEqual(stats, {listener1: 0, listener2: 1, listener3: 0}, 'no listener was invoked');
 	});
 
-	test('BaseModel', function () {
+	test('BaseModel.sync', function () {
 		var TestModel = common.bless(app.BaseModel, 'TestModel', {
 			constructor: function () {
+				this._super({uri: '/parent/child', parentDepth: -1});
 				this.value = ko.observable();
 			}
 		});
@@ -94,10 +95,13 @@ require([
 		equal($root.text(), '', 'checking initial view');
 		testModel.value('new value');
 		equal($root.text(), 'new value', 'model automatically updated view');
+		URI.current('#dummy/url');
+		testModel.cancel();
+		equal(URI.current(), '#parent', 'current uri is updated');
 		$root.remove();
 	});
 
-	asyncTest('BaseModel.crud', function () {
+	asyncTest('BaseModel.async', function () {
 		var TestModel = common.bless(app.BaseModel, 'TestModel', {
 			getData: function () {
 				return this.data;
@@ -163,10 +167,10 @@ require([
 		app.eventBus.add('error', listener);
 
 		var testCases = [
-			{url: newUrl, op: 'save', data: {msg: 'new data'}, current: '#real/url', error: false, newUrl: '/real/url'},
+			{url: newUrl, op: 'save', data: {msg: 'new data'}, current: '#real', error: false, newUrl: '/real/url'},
 			{url: goodUrl, op: 'refresh', data: {msg: 'good response'}, current: '#parent/child', error: false},
 			{url: badUrl, op: 'refresh', data: {msg: 'new data'}, current: '#parent/child', error: true},
-			{url: goodUrl, op: 'save', data: {msg: 'new data'}, current: '#dummy/util/BaseModel/200', error: false},
+			{url: goodUrl, op: 'save', data: {msg: 'new data'}, current: '#dummy/util/BaseModel', error: false},
 			{url: badUrl, op: 'save', data: {msg: 'new data'}, current: '#parent/child', error: true},
 			{url: goodUrl, op: 'del', data: {msg: 'new data'}, current: '#dummy/util/BaseModel', error: false},
 			{url: badUrl, op: 'del', data: {msg: 'new data'}, current: '#parent/child', error: true}
@@ -189,7 +193,7 @@ require([
 			}
 			equal(testModel.busy(), false, 'busy flag is reset after ' + testCases[0].op);
 			deepEqual(testModel.data, testCases[0].data, 'json data is set after ' + testCases[0].op);
-			equal(URI.current(), testCases[0].current);
+			equal(URI.current(), testCases[0].current, 'current uri is updated');
 			if (testCases[0].error) {
 				deepEqual(events[0], ['busy', true], 'checking fired event 0');
 				equal(events[1][0], 'error', 'checking fired event 1');

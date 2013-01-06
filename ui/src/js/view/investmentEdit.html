@@ -1,0 +1,33 @@
+<form class="form-horizontal" data-bind="submit:save">
+	<div class="control-group">
+		<label class="control-label" for="investment-name" data-bind="text:i18n.investmentEdit.name"></label>
+		<div class="controls">
+			<input id="investment-name" type="text" data-bind="value:name"/>
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label" for="investment-symbol" data-bind="text:i18n.investmentEdit.symbol"></label>
+		<div class="controls">
+			<input id="investment-symbol" type="text" data-bind="value:symbol"/>
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label" for="investment-type" data-bind="text:i18n.investmentEdit.type"></label>
+		<div class="controls">
+			<input id="investment-type" type="text" data-bind="value:type"/>
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label" for="investment-active" data-bind="text:i18n.investmentEdit.active"></label>
+		<div class="controls">
+			<input id="investment-active" type="checkbox" data-bind="checked:active"/>
+		</div>
+	</div>
+	<div class="control-group">
+		<div class="controls">
+			<button type="submit" class="btn" data-bind="text:i18n.common.buttonSave"></button>
+			<button type="button" class="btn" data-bind="click:cancel,text:i18n.common.buttonCancel"></button>
+			<button type="button" class="btn" data-bind="click:del,text:i18n.common.buttonDelete"></button>
+		</div>
+	</div>
+</form>

@@ -6,7 +6,7 @@ define([
 ], function (ko, app, common, URI) {
 
 	return common.bless(app.BaseModel, 'model.Account', {
-		constructor: function (args) {
+		constructor:  function (args) {
 			this._super(args);
 			var self = this;
 			this.editHref = ko.computed(function () {
@@ -22,17 +22,23 @@ define([
 				return entry ? entry.uri.href() : undefined;
 			});
 		},
-		getData:     function () {
+		getData:      function () {
 			return {
 				name:   this.name(),
 				active: this.active()
 			};
 		},
-		setData:     function (data) {
+		setData:      function (data) {
 			this.uri.url(data.url.self);
 			this.addEntryUri.url(data.url.addEntry);
 			this.name(data.name);
 			this.active(data.active);
+		},
+		_saveSuccess: function () {
+			URI.current(this.uri.href());
+		},
+		cancel:       function () {
+			URI.current(this.uri.href());
 		}
 	});
 

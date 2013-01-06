@@ -2,8 +2,7 @@ define({
 	root: {
 		accountEdit:    {
 			active: 'Active',
-			name:   'Name',
-			save:   'Save'
+			name:   'Name'
 		},
 		accountToolbar: {
 			accountDelete: 'Delete',
@@ -12,9 +11,20 @@ define({
 			entryAdd:      'New',
 			entryEdit:     'Edit'
 		},
+		common:         {
+			buttonSave:   'Save',
+			buttonCancel: 'Cancel',
+			buttonDelete: 'Delete'
+		},
 		header:         {
 			accountList:    'Accounts',
 			investmentList: 'Investments'
+		},
+		investmentEdit: {
+			active: 'Active',
+			name:   'Name',
+			symbol: 'Ticker Symbol',
+			type:   'Type'
 		},
 		list:           {
 			account:    {
