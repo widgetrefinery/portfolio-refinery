@@ -1,19 +1,19 @@
 <form class="form-horizontal" data-bind="submit:save">
 	<div class="control-group">
-		<label class="control-label" for="account-name">Name</label>
+		<label class="control-label" for="account-name" data-bind="text:i18n.accountEdit.name"></label>
 		<div class="controls">
 			<input id="account-name" type="text" data-bind="value:name"/>
 		</div>
 	</div>
 	<div class="control-group">
-		<label class="control-label" for="account-active">Active</label>
+		<label class="control-label" for="account-active" data-bind="text:i18n.accountEdit.active"></label>
 		<div class="controls">
 			<input id="account-active" type="checkbox" data-bind="checked:active"/>
 		</div>
 	</div>
 	<div class="control-group">
 		<div class="controls">
-			<button type="submit" class="btn">Save</button>
+			<button type="submit" class="btn" data-bind="text:i18n.accountEdit.save"></button>
 		</div>
 	</div>
 </form>

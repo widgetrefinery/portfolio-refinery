@@ -12,7 +12,7 @@ define([
 			var self = this;
 			this.entries = $.map(config.dom.header, function (entry) {
 				return {
-					name: self.i18n.root['header_' + entry],
+					name: self.i18n.header[entry],
 					uri:  new URI(config.url[entry])
 				}
 			});

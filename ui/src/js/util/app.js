@@ -31,7 +31,7 @@ define([
 		constructor:   function (args) {
 			this.busy = ko.observable(false);
 			this.uri = new URI(args.uri);
-			this.i18n = {root: i18n};
+			this.i18n = i18n;
 			this.__existing = args.existing;
 			this.__parentDepth = args.parentDepth;
 		},

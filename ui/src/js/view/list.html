@@ -1,6 +1,6 @@
 <ul class="nav nav-list">
-	<li data-bind="css:{active:addUri.active()}"><a data-bind="attr:{href:addUri.href},text:i18n.model.list_add"></a></li>
-	<li class="nav-header" data-bind="toggle:show.active,text:i18n.model.list_active"></li>
+	<li data-bind="css:{active:addUri.active()}"><a data-bind="attr:{href:addUri.href},text:i18n.list.add"></a></li>
+	<li class="nav-header" data-bind="toggle:show.active,text:i18n.list.activeSection"></li>
 	<li data-bind="bsCollapse:show.active">
 		<ul class="nav nav-list" data-bind="foreach:entries">
 			<!-- ko if:active -->
@@ -8,7 +8,7 @@
 			<!-- /ko -->
 		</ul>
 	</li>
-	<li class="nav-header" data-bind="toggle:show.inactive,text:i18n.model.list_inactive"></li>
+	<li class="nav-header" data-bind="toggle:show.inactive,text:i18n.list.inactiveSection"></li>
 	<li data-bind="bsCollapse:show.inactive">
 		<ul class="nav nav-list" data-bind="foreach:entries">
 			<!-- ko ifnot:active -->
