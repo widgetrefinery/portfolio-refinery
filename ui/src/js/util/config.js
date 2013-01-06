@@ -3,19 +3,14 @@ define(function () {
 	return {
 		dom: {
 			header: [
-				{
-					href: '#account',
-					name: 'Account'
-				},
-				{
-					href: '#fund',
-					name: 'Fund'
-				}
+				'accountList',
+				'fundList'
 			],
 			rootId: 'content'
 		},
 		url: {
-			accountList: '/account'
+			accountList: '/account',
+			fundList:    '/fund'
 		}
 	};
 

@@ -9,10 +9,11 @@ define([
 	return common.bless(app.BaseModel, 'model.Header', {
 		constructor: function () {
 			this._super({});
+			var self = this;
 			this.entries = $.map(config.dom.header, function (entry) {
 				return {
-					name: entry.name,
-					uri:  new URI(entry.href)
+					name: self.i18n.root['header_' + entry],
+					uri:  new URI(config.url[entry])
 				}
 			});
 		}

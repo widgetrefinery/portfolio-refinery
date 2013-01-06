@@ -1,10 +1,11 @@
 define([
 	'jquery',
 	'knockout',
+	'i18n!nls/i18n',
 	'util/common',
 	'util/config',
 	'util/uri'
-], function ($, ko, common, config, URI) {
+], function ($, ko, i18n, common, config, URI) {
 
 	var EventBus = common.bless('util.EventBus', {
 		constructor: function () {
@@ -30,6 +31,7 @@ define([
 		constructor:   function (args) {
 			this.busy = ko.observable(false);
 			this.uri = new URI(args.uri);
+			this.i18n = {root: i18n};
 			this.__existing = args.existing;
 			this.__parentDepth = args.parentDepth;
 		},
