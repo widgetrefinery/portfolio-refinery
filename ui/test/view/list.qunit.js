@@ -1,15 +1,15 @@
 require([
 	'jquery',
-	'model/accounts',
+	'model/accountList',
 	'util/uri',
-	'text!view/accountList.html'
-], function ($, Accounts, URI, html) {
+	'text!view/list.html'
+], function ($, AccountList, URI, html) {
 
-	module('view/accountList');
+	module('view/list');
 
 	test('binding', function () {
 		var $html = $(html).hide().appendTo($('body'));
-		var model = new Accounts({uri: '/dummy/url', existing: true, parentDepth: -1});
+		var model = new AccountList({uri: '/dummy/url', existing: true, parentDepth: -1});
 		model.bind($html);
 		model.setData({
 			url:      {
@@ -36,15 +36,15 @@ require([
 		equal($html.children(':eq(4)').find('a:eq(1)').attr('href'), '#account/4', 'inactive account 2 href');
 		//toggle visibility of active accounts
 		equal($html.children(':eq(2)').hasClass('in'), true, 'active accounts is shown');
-		equal(model.show.activeAccounts(), true, 'model matches view');
+		equal(model.show.active(), true, 'model matches view');
 		$html.children(':eq(1)').trigger('click');
-		equal(model.show.activeAccounts(), false, 'model updated via dom');
+		equal(model.show.active(), false, 'model updated via dom');
 		equal($html.children(':eq(2)').hasClass('in'), false, 'active accounts is hidden');
 		//toggle visibility of inactive accounts
 		equal($html.children(':eq(4)').hasClass('in'), false, 'inactive accounts is hidden');
-		equal(model.show.inactiveAccounts(), false, 'model matches view');
+		equal(model.show.inactive(), false, 'model matches view');
 		$html.children(':eq(3)').trigger('click');
-		equal(model.show.inactiveAccounts(), true, 'model updated via dom');
+		equal(model.show.inactive(), true, 'model updated via dom');
 		equal($html.children(':eq(4)').hasClass('in'), true, 'inactive accounts is shown');
 		//check account highlighting
 		URI.current('');

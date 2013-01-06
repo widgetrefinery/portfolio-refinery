@@ -1,21 +1,21 @@
 define([
 	'jquery',
-	'model/accounts',
+	'model/accountList',
 	'page/2column',
 	'util/app',
 	'util/common',
 	'util/uri',
-	'text!view/accountList.html'
-], function ($, Accounts, Parent, app, common, URI, accountListHtml) {
+	'text!view/list.html'
+], function ($, AccountList, Parent, app, common, URI, listHtml) {
 
 	return common.bless(Parent, 'page.AccountList', {
 		setLeft: function (prevPage, $container) {
-			var accounts = this._addModel(prevPage, Accounts, {
+			var accounts = this._addModel(prevPage, AccountList, {
 				uri:         URI.subUri(URI.current(), 1),
 				existing:    true,
 				parentDepth: -1
 			});
-			var $accountListHtml = $(accountListHtml).appendTo($container);
+			var $accountListHtml = $(listHtml).appendTo($container);
 			accounts.bind($accountListHtml);
 			accounts.refresh();
 		}
