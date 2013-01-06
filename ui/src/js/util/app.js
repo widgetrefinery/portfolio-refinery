@@ -32,7 +32,7 @@ define([
 			this.busy = ko.observable(false);
 			this.uri = new URI(args.uri);
 			this.i18n = i18n;
-			this.__existing = args.existing;
+			this.existing = ko.observable(args.existing);
 			this.__parentDepth = args.parentDepth;
 		},
 		bind:          function ($html) {
@@ -49,7 +49,7 @@ define([
 			eventBus.fire('error', {response: xhr});
 		},
 		refresh:       function () {
-			if (this.__existing) {
+			if (this.existing()) {
 				this._setBusy(true);
 				$.ajax(this.uri.url(), {
 					context:  this,
@@ -80,8 +80,8 @@ define([
 			this._goToParent();
 		},
 		_saveError:    function (xhr) {
-			if (!this.__existing && 302 == xhr.status) {
-				this.__existing = true;
+			if (!this.existing() && 302 == xhr.status) {
+				this.existing(true);
 				this.uri.url(xhr.getResponseHeader('location'));
 				this._saveSuccess();
 			} else {
@@ -90,13 +90,17 @@ define([
 		},
 		del:           function () {
 			this._setBusy(true);
-			$.ajax(this.uri.url(), {
-				context:  this,
-				type:     'DELETE',
-				complete: this._ajaxComplete,
-				error:    this._ajaxError,
-				success:  this._delSuccess
-			});
+			if (this.existing()) {
+				$.ajax(this.uri.url(), {
+					context:  this,
+					type:     'DELETE',
+					complete: this._ajaxComplete,
+					error:    this._ajaxError,
+					success:  this._delSuccess
+				});
+			} else {
+				this._delSuccess();
+			}
 		},
 		_delSuccess:   function () {
 			this._goToParent();

@@ -27,7 +27,9 @@
 		<div class="controls">
 			<button type="submit" class="btn" data-bind="text:i18n.common.buttonSave"></button>
 			<button type="button" class="btn" data-bind="click:cancel,text:i18n.common.buttonCancel"></button>
+			<!-- ko if:existing -->
 			<button type="button" class="btn" data-bind="click:del,text:i18n.common.buttonDelete"></button>
+			<!-- /ko -->
 		</div>
 	</div>
 </form>

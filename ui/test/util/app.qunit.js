@@ -187,7 +187,7 @@ require([
 		}
 
 		function check() {
-			equal(testModel.__existing, true, 'existing flag is set after ' + testCases[0].op);
+			equal(testModel.existing(), true, 'existing flag is set after ' + testCases[0].op);
 			if (testCases[0].newUrl) {
 				equal(testModel.uri.url(), testCases[0].newUrl, 'url is set after ' + testCases[0].op);
 			}

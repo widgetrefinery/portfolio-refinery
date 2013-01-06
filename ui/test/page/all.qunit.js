@@ -6,9 +6,10 @@ require([
 	'page/accountNew',
 	'page/investmentEdit',
 	'page/investmentList',
+	'page/investmentNew',
 	'util/uri',
 	'jquery.mockjax'
-], function ($, Account, AccountEdit, AccountList, AccountNew, InvestmentEdit, InvestmentList, URI) {
+], function ($, Account, AccountEdit, AccountList, AccountNew, InvestmentEdit, InvestmentList, InvestmentNew, URI) {
 
 	module('page');
 
@@ -69,7 +70,8 @@ require([
 			{clazz: AccountList, href: '#account'},
 			{clazz: AccountNew, href: '#account/create'},
 			{clazz: InvestmentEdit, href: '#investment/1'},
-			{clazz: InvestmentList, href: '#investment'}
+			{clazz: InvestmentList, href: '#investment'},
+			{clazz: InvestmentNew, href: '#investment/create'}
 		];
 		var page;
 		part1();

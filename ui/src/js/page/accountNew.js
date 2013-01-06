@@ -10,7 +10,7 @@ define([
 
 	return common.bless(Parent, 'page.AccountNew', {
 		setCenter: function (prevPage, $container) {
-			var account = this._addModel(undefined, Account, {
+			var account = new Account({
 				uri:         URI.subUri(URI.current(), 2),
 				existing:    false,
 				parentDepth: -1
