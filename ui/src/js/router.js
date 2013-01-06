@@ -19,6 +19,7 @@ define([
 		this.get('#account/_', loadPage('page/accountNew'));
 		this.get('#account/:id', loadPage('page/account'));
 		this.get('#account/:id/edit', loadPage('page/accountEdit'));
+		this.get('#investment', loadPage('page/investmentList'));
 		this.get('', function () {
 			window.location.replace('#account');
 		});

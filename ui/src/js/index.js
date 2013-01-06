@@ -77,5 +77,22 @@ require([
 		type:   'DELETE',
 		status: 204
 	});
+	$.mockjax({
+		url:          '/investment',
+		type:         'GET',
+		contentType:  'application/json',
+		responseText: JSON.stringify({
+			url:         {
+				self:          '/investment',
+				addInvestment: '/investment/_'
+			},
+			investments: [
+				{url: {self: '/investment/1'}, name: 'Investment 1', active: false},
+				{url: {self: '/investment/2'}, name: 'Investment 2', active: true},
+				{url: {self: '/investment/3'}, name: 'Investment 3', active: true},
+				{url: {self: '/investment/4'}, name: 'Investment 4', active: false}
+			]
+		})
+	});
 	router.run();
 });

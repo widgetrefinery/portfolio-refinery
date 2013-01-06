@@ -4,13 +4,13 @@ define(function () {
 		dom: {
 			header: [
 				'accountList',
-				'fundList'
+				'investmentList'
 			],
 			rootId: 'content'
 		},
 		url: {
-			accountList: '/account',
-			fundList:    '/fund'
+			accountList:    '/account',
+			investmentList: '/investment'
 		}
 	};
 

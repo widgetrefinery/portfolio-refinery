@@ -13,14 +13,19 @@ define({
 			entryEdit:     'Edit'
 		},
 		header:         {
-			accountList: 'Accounts',
-			fundList:    'Funds'
+			accountList:    'Accounts',
+			investmentList: 'Investments'
 		},
 		list:           {
-			account: {
+			account:    {
 				activeSection:   'Accounts',
 				add:             'New Account',
 				inactiveSection: 'Inactive Accounts'
+			},
+			investment: {
+				activeSection:   'Investments',
+				add:             'New Investment',
+				inactiveSection: 'Inactive Investments'
 			}
 		}
 	}
