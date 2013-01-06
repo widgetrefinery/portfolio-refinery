@@ -28,6 +28,10 @@
 			'bootstrap':      ['jquery'],
 			'jquery.mockjax': ['jquery'],
 			'sammy':          ['jquery']
+		},
+		i18n:    {
+			//force i18n to use root locale to ensure tests are consistent
+			locale: 'root'
 		}
 	});
 	require([

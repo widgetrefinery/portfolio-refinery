@@ -14,7 +14,9 @@
 	<div class="control-group">
 		<label class="control-label" for="investment-type" data-bind="text:i18n.investmentEdit.type"></label>
 		<div class="controls">
-			<input id="investment-type" type="text" data-bind="value:type"/>
+			<select id="investment-type" data-bind="foreach:types,value:type">
+				<option data-bind="attr:{value:id},text:desc"></option>
+			</select>
 		</div>
 	</div>
 	<div class="control-group">

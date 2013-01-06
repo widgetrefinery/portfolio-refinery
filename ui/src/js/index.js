@@ -104,7 +104,7 @@ require([
 			},
 			name:   'Investment 2',
 			symbol: 'VFITX',
-			type:   'BOND',
+			type:   'BM',
 			active: true
 		})
 	});

@@ -36,12 +36,12 @@ require([
 			},
 			name:   'Investment 1',
 			symbol: 'VFITX',
-			type:   'BOND',
+			type:   'BM',
 			active: true
 		});
 		equal($html.find('#investment-name').val(), 'Investment 1', 'name input');
 		equal($html.find('#investment-symbol').val(), 'VFITX', 'symbol input');
-		equal($html.find('#investment-type').val(), 'BOND', 'type input');
+		equal($html.find('#investment-type').val(), 'BM', 'type input');
 		equal($html.find('#investment-active').attr('checked'), 'checked', 'active checkbox');
 		//test form buttons
 		equal(saveInvoked, false, 'save had not been called');
