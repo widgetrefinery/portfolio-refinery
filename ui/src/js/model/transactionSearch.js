@@ -1,16 +1,27 @@
 define([
 	'jquery',
 	'knockout',
+	'i18n!nls/i18n',
 	'model/list',
 	'util/app',
 	'util/common',
 	'util/config',
 	'util/uri'
-], function ($, ko, List, app, common, config, URI) {
+], function ($, ko, i18n, List, app, common, config, URI) {
+
+	var transactionTypes = $.map(i18n.common.transactionType, function (value, key) {
+		return {id: key, desc: value};
+	});
+	transactionTypes.sort(function (a, b) {
+		return a.desc.localeCompare(b.desc);
+	});
+	transactionTypes.unshift({id: '', desc: i18n.transactionMenu.param.type});
 
 	return common.bless(app.BaseModel, 'model.TransactionSearch', {
 		constructor:    function (args) {
 			this._super(args);
+			this.addUri = new URI(config.url.transactionAdd);
+			this.types = transactionTypes;
 			this.searchParams = {
 				startDate:  ko.observable(),
 				endDate:    ko.observable(),

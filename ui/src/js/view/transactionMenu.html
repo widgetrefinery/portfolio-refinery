@@ -1,0 +1,26 @@
+<ul class="nav nav-list">
+	<li data-bind="css:{active:addUri.active()}"><a data-bind="attr:{href:addUri.href},text:i18n.transactionMenu.add"></a></li>
+	<li data-bind="css:{active:false}"><a data-bind="attr:{href:''},text:i18n.transactionMenu.edit"></a></li>
+	<li class="nav-header" data-bind="text:i18n.transactionMenu.search"></li>
+	<li>
+		<form data-bind="submit:search">
+			<div class="control-group">
+				<div class="controls">
+					<input id="tx-search-start" type="text" data-bind="attr:{placeholder:i18n.transactionMenu.param.startDate,title:i18n.transactionMenu.param.startDate},value:searchParams.startDate"/>
+					<input id="tx-search-end" type="text" data-bind="attr:{placeholder:i18n.transactionMenu.param.endDate,title:i18n.transactionMenu.param.endDate},value:searchParams.endDate"/>
+					<input id="tx-search-account" type="text" data-bind="attr:{placeholder:i18n.transactionMenu.param.account,title:i18n.transactionMenu.param.account},value:searchParams.account"/>
+					<input id="tx-search-investment" type="text" data-bind="attr:{placeholder:i18n.transactionMenu.param.investment,title:i18n.transactionMenu.param.investment},value:searchParams.investment"/>
+					<select id="tx-search-type" data-bind="attr:{title:i18n.transactionMenu.param.type},foreach:types,value:searchParams.type">
+						<option data-bind="attr:{value:id},text:desc"></option>
+					</select>
+				</div>
+			</div>
+			<div class="control-group">
+				<div class="controls">
+					<button type="submit" class="btn" data-bind="text:i18n.transactionMenu.search"></button>
+					<button type="button" class="btn" data-bind="click:reset,text:i18n.transactionMenu.clear"></button>
+				</div>
+			</div>
+		</form>
+	</li>
+</ul>

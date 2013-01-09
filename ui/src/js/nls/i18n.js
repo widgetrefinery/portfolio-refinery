@@ -1,21 +1,21 @@
 define({
 	root: {
-		accountEdit:    {
+		accountEdit:     {
 			active: 'Active',
 			name:   'Name'
 		},
-		accountToolbar: {
+		accountToolbar:  {
 			accountDelete: 'Delete',
 			accountEdit:   'Edit',
 			accountMenu:   'Account',
 			entryAdd:      'New',
 			entryEdit:     'Edit'
 		},
-		common:         {
-			buttonSave:     'Save',
-			buttonCancel:   'Cancel',
-			buttonDelete:   'Delete',
-			investmentType: {
+		common:          {
+			buttonSave:      'Save',
+			buttonCancel:    'Cancel',
+			buttonDelete:    'Delete',
+			investmentType:  {
 				BL:  'Bond (Long-Term)',
 				BM:  'Bond (Medium-Term)',
 				BS:  'Bond (Short-Term)',
@@ -34,19 +34,27 @@ define({
 				ISB: 'International Small-Cap Blend',
 				ISG: 'International Small-Cap Growth',
 				ISV: 'International Small-Cap Value'
+			},
+			transactionType: {
+				D: 'Dividend',
+				P: 'Purchase',
+				R: 'Rebalance',
+				S: 'Sell',
+				T: 'Transfer'
 			}
 		},
-		header:         {
-			accountList:    'Accounts',
-			investmentList: 'Investments'
+		header:          {
+			accountList:     'Accounts',
+			investmentList:  'Investments',
+			transactionList: 'Transactions'
 		},
-		investmentEdit: {
+		investmentEdit:  {
 			active: 'Active',
 			name:   'Name',
 			symbol: 'Ticker Symbol',
 			type:   'Type'
 		},
-		list:           {
+		list:            {
 			account:    {
 				activeSection:   'Accounts',
 				add:             'New Account',
@@ -57,6 +65,19 @@ define({
 				add:             'New Investment',
 				inactiveSection: 'Inactive Investments'
 			}
+		},
+		transactionMenu: {
+			add:    'Add',
+			edit:   'Edit',
+			clear:  'Clear',
+			param:  {
+				account:    'Account',
+				endDate:    'End Date',
+				investment: 'Investment',
+				startDate:  'Start Date',
+				type:       'Type'
+			},
+			search: 'Search'
 		}
 	}
 });

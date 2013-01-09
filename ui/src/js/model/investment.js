@@ -1,9 +1,10 @@
 define([
+	'jquery',
 	'knockout',
 	'i18n!nls/i18n',
 	'util/app',
 	'util/common'
-], function (ko, i18n, app, common) {
+], function ($, ko, i18n, app, common) {
 
 	var investmentTypes = $.map(i18n.common.investmentType, function (value, key) {
 		return {id: key, desc: value};

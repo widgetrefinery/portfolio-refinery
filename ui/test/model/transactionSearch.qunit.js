@@ -9,6 +9,13 @@ require([
 
 	module('model/transactionSearch');
 
+	test('types', function () {
+		var model = new TransactionSearch({});
+		deepEqual(model.types[1], {id: 'D', desc: 'Dividend'}, 'transaction type 1');
+		deepEqual(model.types[2], {id: 'P', desc: 'Purchase'}, 'transaction type 2');
+		deepEqual(model.types[5], {id: 'T', desc: 'Transfer'}, 'transaction type 5');
+	});
+
 	test('reset', function () {
 		var model = new TransactionSearch({});
 		model.searchParams.startDate('2001-02-03');

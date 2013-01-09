@@ -4,13 +4,15 @@ define(function () {
 		dom: {
 			header: [
 				'accountList',
-				'investmentList'
+				'investmentList',
+				'transactionList'
 			],
 			rootId: 'content'
 		},
 		url: {
 			accountList:     '/account',
 			investmentList:  '/investment',
+			transactionAdd:  '/transaction/_',
 			transactionList: '/transaction'
 		}
 	};
