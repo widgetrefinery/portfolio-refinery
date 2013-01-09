@@ -9,8 +9,9 @@ define(function () {
 			rootId: 'content'
 		},
 		url: {
-			accountList:    '/account',
-			investmentList: '/investment'
+			accountList:     '/account',
+			investmentList:  '/investment',
+			transactionList: '/transaction'
 		}
 	};
 
