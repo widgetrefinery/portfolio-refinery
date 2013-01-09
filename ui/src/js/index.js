@@ -21,6 +21,7 @@ require([
 	'bootstrap',
 	'binding/bsCollapse',
 	'binding/bsToggleBtn',
+	'binding/bsTypeahead',
 	'binding/toggle',
 	'jquery.mockjax'
 ], function ($, router) {
