@@ -4,20 +4,15 @@ define({
 			active: 'Active',
 			name:   'Name'
 		},
-		accountToolbar:    {
-			accountDelete: 'Delete',
-			accountEdit:   'Edit',
-			accountMenu:   'Account',
-			entryAdd:      'New',
-			entryEdit:     'Edit'
-		},
 		common:            {
-			buttonSave:      'Save',
-			buttonCancel:    'Cancel',
-			buttonDelete:    'Delete',
 			currency:        {
 				precision: 2,
 				prefix:    '$'
+			},
+			form:            {
+				cancel: 'Cancel',
+				del:    'Delete',
+				save:   'Save'
 			},
 			investmentType:  {
 				BL:  'Bond (Long-Term)',
