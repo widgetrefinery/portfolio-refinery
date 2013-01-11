@@ -6,8 +6,10 @@
 		<form data-bind="submit:search">
 			<div class="control-group">
 				<div class="controls">
-					<input id="tx-search-start" type="text" data-bind="attr:{placeholder:i18n.transactionMenu.param.startDate,title:i18n.transactionMenu.param.startDate},value:searchParams.startDate"/>
-					<input id="tx-search-end" type="text" data-bind="attr:{placeholder:i18n.transactionMenu.param.endDate,title:i18n.transactionMenu.param.endDate},value:searchParams.endDate"/>
+					<input id="tx-search-start" type="text"
+							data-bind="attr:{placeholder:i18n.transactionMenu.param.startDate,title:i18n.transactionMenu.param.startDate},juDatepicker:{before:'#tx-search-end',value:searchParams.startDate},value:searchParams.startDate"/>
+					<input id="tx-search-end" type="text"
+							data-bind="attr:{placeholder:i18n.transactionMenu.param.endDate,title:i18n.transactionMenu.param.endDate},juDatepicker:{after:'#tx-search-start',value:searchParams.endDate},value:searchParams.endDate"/>
 					<input id="tx-search-account" type="text" data-bind="attr:{placeholder:i18n.transactionMenu.param.account,title:i18n.transactionMenu.param.account},bsTypeahead:findAccount,value:searchParams.account"/>
 					<input id="tx-search-investment" type="text" data-bind="attr:{placeholder:i18n.transactionMenu.param.investment,title:i18n.transactionMenu.param.investment},bsTypeahead:findInvestment,value:searchParams.investment"/>
 					<select id="tx-search-type" data-bind="attr:{title:i18n.transactionMenu.param.type},foreach:types,value:searchParams.type">

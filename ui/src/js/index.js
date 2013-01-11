@@ -2,7 +2,8 @@ requirejs.config({
 	paths: {
 		'bootstrap':        'lib/bootstrap-2.2.2.min',
 		'i18n':             'lib/require/i18n-2.0.1',
-		'jquery':           'lib/jquery-1.8.3.min',
+		'jquery':           'lib/jquery/jquery-1.8.3.min',
+		'jqueryui':         'lib/jquery/jquery-ui-1.9.2',
 		'knockout':         'lib/knockout/knockout-2.2.0.min',
 		'knockout.mapping': 'lib/knockout/knockout.mapping-2.3.5.min',
 		'sammy':            'lib/sammy-0.7.2.min',
@@ -22,6 +23,7 @@ require([
 	'binding/bsCollapse',
 	'binding/bsToggleBtn',
 	'binding/bsTypeahead',
+	'binding/juDatepicker',
 	'binding/toggle',
 	'jquery.mockjax'
 ], function ($, router) {
