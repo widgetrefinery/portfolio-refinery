@@ -56,8 +56,7 @@ require([
 		contentType:  'application/json',
 		responseText: JSON.stringify({
 			url:    {
-				self:     '/account/2',
-				addEntry: '/account/2/transaction/_'
+				self:     '/account/2'
 			},
 			name:   'Account 2',
 			active: true
