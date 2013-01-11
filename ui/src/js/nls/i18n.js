@@ -72,7 +72,6 @@ define({
 		},
 		transactionMenu:   {
 			add:    'Add',
-			edit:   'Edit',
 			clear:  'Clear',
 			param:  {
 				account:    'Account',
