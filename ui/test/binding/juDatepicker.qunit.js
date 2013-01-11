@@ -21,6 +21,7 @@ require([
 		equal(model.state(), '2002-03-04', 'model updated via dom');
 		deepEqual($root.datepicker('getDate'), new Date(2002, 2, 4, 0, 0, 0, 0), 'datepicker updated via dom');
 		//cleanup
+		$root.datepicker('widget').remove();
 		$root.remove();
 	});
 
@@ -37,6 +38,7 @@ require([
 		model.from(undefined);
 		equal($root.find('#to').datepicker('option', 'minDate'), undefined, 'minDate is reset');
 		//cleanup
+		$root.datepicker('widget').remove();
 		$root.remove();
 	});
 
@@ -53,6 +55,7 @@ require([
 		model.to(undefined);
 		equal($root.find('#from').datepicker('option', 'maxDate'), undefined, 'maxDate is reset');
 		//cleanup
+		$root.datepicker('widget').remove();
 		$root.remove();
 	});
 
