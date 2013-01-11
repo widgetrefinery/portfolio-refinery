@@ -1,6 +1,5 @@
 require([
 	'jquery',
-	'page/account',
 	'page/accountEdit',
 	'page/accountList',
 	'page/accountNew',
@@ -10,7 +9,7 @@ require([
 	'page/transaction',
 	'util/uri',
 	'jquery.mockjax'
-], function ($, Account, AccountEdit, AccountList, AccountNew, InvestmentEdit, InvestmentList, InvestmentNew, Transaction, URI) {
+], function ($, AccountEdit, AccountList, AccountNew, InvestmentEdit, InvestmentList, InvestmentNew, Transaction, URI) {
 
 	module('page');
 
@@ -66,7 +65,6 @@ require([
 		var ajaxTimeout = 50;
 
 		var pages = [
-			{clazz: Account, href: '#account/1'},
 			{clazz: AccountEdit, href: '#account/1'},
 			{clazz: AccountList, href: '#account'},
 			{clazz: AccountNew, href: '#account/create'},
