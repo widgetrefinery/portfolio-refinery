@@ -22,6 +22,7 @@
 }
 
 /*rewrite jquery-ui image paths*/
+
 .ui-widget-content { background-image: url(../img/lib/jquery-ui/ui-bg_flat_75_ffffff_40x100.png);/*{bgImgUrlContent}*/ }
 .ui-widget-header { background-image: url(../img/lib/jquery-ui/ui-bg_highlight-soft_75_cccccc_1x100.png)/*{bgImgUrlHeader}*/; }
 .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default { background-image: url(../img/lib/jquery-ui/ui-bg_glass_75_e6e6e6_1x400.png)/*{bgImgUrlDefault}*/; }
@@ -39,3 +40,12 @@
 .ui-state-error .ui-icon, .ui-state-error-text .ui-icon { background-image: url(../img/lib/jquery-ui/ui-icons_cd0a0a_256x240.png)/*{iconsError}*/; }
 .ui-widget-overlay { background-image: url(../img/lib/jquery-ui/ui-bg_flat_0_aaaaaa_40x100.png)/*{bgImgUrlOverlay}*/; }
 .ui-widget-shadow { background-image: url(../img/lib/jquery-ui/ui-bg_flat_0_aaaaaa_40x100.png)/*{bgImgUrlShadow}*/; }
+
+/*app styles*/
+.table-hover tbody tr td a {
+	visibility: hidden;
+}
+
+.table-hover tbody tr:hover td a {
+	visibility: inherit;
+}

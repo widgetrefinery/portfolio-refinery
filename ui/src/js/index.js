@@ -56,7 +56,7 @@ require([
 		contentType:  'application/json',
 		responseText: JSON.stringify({
 			url:    {
-				self:     '/account/2'
+				self: '/account/2'
 			},
 			name:   'Account 2',
 			active: true
@@ -157,6 +157,7 @@ require([
 				var accountId = randomInt(10, 1);
 				var investmentId = randomInt(10, 1);
 				transactions.push({
+					url:        {self: '/transaction/' + randomInt(100, 1)},
 					ts:         '20' + randomInt(10, 2) + '-' + randomInt(10, 2) + '-' + randomInt(10, 2),
 					account:    {
 						url:  {self: '/account/' + accountId},

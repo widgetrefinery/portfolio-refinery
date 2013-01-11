@@ -71,16 +71,14 @@ define({
 			}
 		},
 		transactionMenu:   {
-			add:    'Add',
-			clear:  'Clear',
-			param:  {
-				account:    'Account',
-				endDate:    'End Date',
-				investment: 'Investment',
-				startDate:  'Start Date',
-				type:       'Type'
-			},
-			search: 'Search'
+			account:    'Account',
+			add:        'Add',
+			clear:      'Clear',
+			endDate:    'End Date',
+			investment: 'Investment',
+			search:     'Search',
+			startDate:  'Start Date',
+			type:       'Type'
 		},
 		transactionSearch: {
 			account:    'Account',

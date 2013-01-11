@@ -5,13 +5,13 @@
 		<form data-bind="submit:search">
 			<div class="control-group">
 				<div class="controls">
-					<input id="tx-search-start" type="text"
-							data-bind="attr:{placeholder:i18n.transactionMenu.param.startDate,title:i18n.transactionMenu.param.startDate},juDatepicker:{before:'#tx-search-end',value:searchParams.startDate},value:searchParams.startDate"/>
-					<input id="tx-search-end" type="text"
-							data-bind="attr:{placeholder:i18n.transactionMenu.param.endDate,title:i18n.transactionMenu.param.endDate},juDatepicker:{after:'#tx-search-start',value:searchParams.endDate},value:searchParams.endDate"/>
-					<input id="tx-search-account" type="text" data-bind="attr:{placeholder:i18n.transactionMenu.param.account,title:i18n.transactionMenu.param.account},bsTypeahead:findAccount,value:searchParams.account"/>
-					<input id="tx-search-investment" type="text" data-bind="attr:{placeholder:i18n.transactionMenu.param.investment,title:i18n.transactionMenu.param.investment},bsTypeahead:findInvestment,value:searchParams.investment"/>
-					<select id="tx-search-type" data-bind="attr:{title:i18n.transactionMenu.param.type},foreach:types,value:searchParams.type">
+					<input class="span2" id="tx-search-start" type="text"
+							data-bind="attr:{placeholder:i18n.transactionMenu.startDate,title:i18n.transactionMenu.startDate},juDatepicker:{before:'#tx-search-end',value:searchParams.startDate},value:searchParams.startDate"/>
+					<input class="span2" id="tx-search-end" type="text"
+							data-bind="attr:{placeholder:i18n.transactionMenu.endDate,title:i18n.transactionMenu.endDate},juDatepicker:{after:'#tx-search-start',value:searchParams.endDate},value:searchParams.endDate"/>
+					<input class="span2" id="tx-search-account" type="text" data-bind="attr:{placeholder:i18n.transactionMenu.account,title:i18n.transactionMenu.account},bsTypeahead:findAccount,value:searchParams.account"/>
+					<input class="span2" id="tx-search-investment" type="text" data-bind="attr:{placeholder:i18n.transactionMenu.investment,title:i18n.transactionMenu.investment},bsTypeahead:findInvestment,value:searchParams.investment"/>
+					<select class="span2" id="tx-search-type" data-bind="attr:{title:i18n.transactionMenu.type},foreach:types,value:searchParams.type">
 						<option data-bind="attr:{value:id},text:desc"></option>
 					</select>
 				</div>

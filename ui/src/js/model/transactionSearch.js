@@ -15,7 +15,7 @@ define([
 	transactionTypes.sort(function (a, b) {
 		return a.desc.localeCompare(b.desc);
 	});
-	transactionTypes.unshift({id: '', desc: i18n.transactionMenu.param.type});
+	transactionTypes.unshift({id: '', desc: i18n.transactionMenu.type});
 
 	return common.bless(app.BaseModel, 'model.TransactionSearch', {
 		constructor: function (args) {
@@ -84,6 +84,7 @@ define([
 				this.moreResults.url('');
 			}
 			$.each(data.transactions, function (ndx, transaction) {
+				transaction.uri = new URI(transaction.url.self);
 				transaction.fmtUnitPrice = common.currency(transaction.unitPrice);
 				transaction.fmtQuantity = transaction.quantity.toFixed(4);
 				transaction.fmtTotal = common.currency(transaction.total);

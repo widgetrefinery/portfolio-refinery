@@ -1,3 +1,4 @@
+<!-- ko if:results().length -->
 <table class="table table-hover">
 	<thead>
 	<tr>
@@ -8,7 +9,7 @@
 		<th data-bind="text:i18n.transactionSearch.quantity"></th>
 		<th data-bind="text:i18n.transactionSearch.total"></th>
 		<th data-bind="text:i18n.transactionSearch.principle"></th>
-		<th data-bind="text:i18n.transactionSearch.type"></th>
+		<th colspan="2" data-bind="text:i18n.transactionSearch.type"></th>
 	</tr>
 	</thead>
 	<tbody data-bind="foreach:results">
@@ -21,6 +22,8 @@
 		<td data-bind="attr:{title:total},text:fmtTotal"></td>
 		<td data-bind="attr:{title:principle},text:fmtPrinciple"></td>
 		<td data-bind="text:typeName"></td>
+		<td><a data-bind="attr:{href:uri.href}"><i class="icon-pencil"></i></a></td>
 	</tr>
 	</tbody>
 </table>
+<!-- /ko -->
