@@ -1,4 +1,7 @@
-define(['jquery'], function ($) {
+define([
+	'jquery',
+	'i18n!nls/i18n'
+], function ($, i18n) {
 
 	var bless = function (parentClass, className, classDef) {
 		if (2 == arguments.length) {
@@ -40,8 +43,17 @@ define(['jquery'], function ($) {
 		return classDef.constructor;
 	};
 
+	var currency = function (value) {
+		//TODO: thousands separator
+		if (value || 0 === value) {
+			return i18n.common.currency.prefix + value.toFixed(i18n.common.currency.precision);
+		}
+		return undefined;
+	};
+
 	return {
-		bless: bless
+		bless:    bless,
+		currency: currency
 	};
 
 });

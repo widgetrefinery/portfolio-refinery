@@ -84,7 +84,12 @@ define([
 				this.moreResults.url('');
 			}
 			$.each(data.transactions, function (ndx, transaction) {
-				self.results().push(transaction);
+				transaction.fmtUnitPrice = common.currency(transaction.unitPrice);
+				transaction.fmtQuantity = transaction.quantity.toFixed(4);
+				transaction.fmtTotal = common.currency(transaction.total);
+				transaction.fmtPrinciple = common.currency(transaction.principle);
+				transaction.typeName = i18n.common.transactionType[transaction.type];
+				self.results.push(transaction);
 			});
 		},
 		_typeahead:  function (searchUrl, searchParam, resultKey, callback) {

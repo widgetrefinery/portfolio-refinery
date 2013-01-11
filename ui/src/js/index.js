@@ -19,6 +19,7 @@ requirejs.config({
 require([
 	'jquery',
 	'router',
+	'i18n!nls/i18n',
 	'bootstrap',
 	'binding/bsCollapse',
 	'binding/bsToggleBtn',
@@ -26,7 +27,7 @@ require([
 	'binding/juDatepicker',
 	'binding/toggle',
 	'jquery.mockjax'
-], function ($, router) {
+], function ($, router, i18n) {
 	$.ajaxSetup({
 		accepts: 'application/json',
 		cache:   false,
@@ -128,6 +129,62 @@ require([
 		url:    '/investment/*',
 		type:   'DELETE',
 		status: 204
+	});
+	$.mockjax({
+		url:         '/transaction',
+		type:        'GET',
+		contentType: 'application/json',
+		response:    function () {
+			var randomInt = function (scale, padding) {
+				var result = '' + Math.floor(Math.random() * scale);
+				while (result.length < padding) {
+					result = '0' + result;
+				}
+				return result;
+			};
+			var randomSymbol = function () {
+				var randomSpace = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+				var result = '';
+				for (var ndx = 0; ndx < 5; ndx++) {
+					result += randomSpace[Math.floor(Math.random() * randomSpace.length)];
+				}
+				return result;
+			};
+			var transactionTypes = $.map(i18n.common.transactionType, function (value, key) {
+				return key;
+			});
+			var transactions = [];
+			for (var ndx = 0; ndx < 20; ndx++) {
+				var accountId = randomInt(10, 1);
+				var investmentId = randomInt(10, 1);
+				transactions.push({
+					ts:         '20' + randomInt(10, 2) + '-' + randomInt(10, 2) + '-' + randomInt(10, 2),
+					account:    {
+						url:  {self: '/account/' + accountId},
+						name: 'Account ' + accountId
+					},
+					investment: {
+						url:    {self: '/investment/' + investmentId},
+						name:   'Investment ' + investmentId,
+						symbol: randomSymbol()
+					},
+					unitPrice:  Math.random() * 100,
+					quantity:   Math.random() * 10,
+					total:      Math.random() * 100,
+					principle:  Math.random() * 100,
+					type:       transactionTypes[Math.floor(Math.random() * transactionTypes.length)]
+				});
+			}
+			transactions.sort(function (a, b) {
+				return a.ts.localeCompare(b.ts);
+			});
+			this.responseText = JSON.stringify({
+				url:          {
+					next: '/transaction/more'
+				},
+				transactions: transactions
+			});
+		}
 	});
 	router.run();
 });

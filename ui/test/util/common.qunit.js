@@ -72,4 +72,11 @@ require([
 		equal(single.check(), 'Single', 'Single is properly initialized');
 	});
 
+	test('currency', function () {
+		equal(common.currency(), undefined, 'undefined');
+		equal(common.currency(0), '$0.00', '0');
+		equal(common.currency(0.5), '$0.50', '0.5');
+		equal(common.currency(10.125), '$10.13', '10.125');
+	});
+
 });

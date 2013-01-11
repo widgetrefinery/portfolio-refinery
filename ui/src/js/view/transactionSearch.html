@@ -1,0 +1,26 @@
+<table class="table table-hover">
+	<thead>
+	<tr>
+		<th data-bind="text:i18n.transactionSearch.date"></th>
+		<th data-bind="text:i18n.transactionSearch.account"></th>
+		<th data-bind="text:i18n.transactionSearch.investment"></th>
+		<th data-bind="text:i18n.transactionSearch.unitPrice"></th>
+		<th data-bind="text:i18n.transactionSearch.quantity"></th>
+		<th data-bind="text:i18n.transactionSearch.total"></th>
+		<th data-bind="text:i18n.transactionSearch.principle"></th>
+		<th data-bind="text:i18n.transactionSearch.type"></th>
+	</tr>
+	</thead>
+	<tbody data-bind="foreach:results">
+	<tr>
+		<td data-bind="text:ts"></td>
+		<td data-bind="text:account.name"></td>
+		<td data-bind="attr:{title:investment.name},text:investment.symbol"></td>
+		<td data-bind="attr:{title:unitPrice},text:fmtUnitPrice"></td>
+		<td data-bind="attr:{title:quantity},text:fmtQuantity"></td>
+		<td data-bind="attr:{title:total},text:fmtTotal"></td>
+		<td data-bind="attr:{title:principle},text:fmtPrinciple"></td>
+		<td data-bind="text:typeName"></td>
+	</tr>
+	</tbody>
+</table>

@@ -12,7 +12,7 @@ require([
 	test('types', function () {
 		var model = new TransactionSearch({});
 		deepEqual(model.types[1], {id: 'D', desc: 'Dividend'}, 'transaction type 1');
-		deepEqual(model.types[2], {id: 'P', desc: 'Purchase'}, 'transaction type 2');
+		deepEqual(model.types[2], {id: 'B', desc: 'Purchase'}, 'transaction type 2');
 		deepEqual(model.types[5], {id: 'T', desc: 'Transfer'}, 'transaction type 5');
 	});
 
@@ -31,7 +31,58 @@ require([
 		equal(model.searchParams.type(), '', 'checking type');
 	});
 
+	test('setData', function () {
+		var model = new TransactionSearch({});
+		model.setData({
+			url:          {next: '/transaction/next'},
+			transactions: [
+				{
+					url:        {self: '/transaction/1'},
+					account:    {name: 'Account 1'},
+					investment: {name: 'Inv 1', symbol: 'SYM1'},
+					unitPrice:  1,
+					quantity:   2,
+					total:      3,
+					principle:  4,
+					type:       'B'
+				},
+				{
+					url:        {self: '/transaction/2'},
+					account:    {name: 'Account 2'},
+					investment: {name: 'Inv 2', symbol: 'SYM2'},
+					unitPrice:  1.23456,
+					quantity:   2.34567,
+					total:      3.45678,
+					principle:  4.56789,
+					type:       'S'
+				}
+			]
+		});
+		equal(model.moreResults.url(), '/transaction/next', 'next url');
+		equal(model.results().length, 2, '2 transactions loaded');
+		equal(model.results()[0].fmtUnitPrice, '$1.00', '1st fmtUnitPrice');
+		equal(model.results()[0].fmtQuantity, '2.0000', '1st fmtQuantity');
+		equal(model.results()[0].fmtTotal, '$3.00', '1st fmtTotal');
+		equal(model.results()[0].fmtPrinciple, '$4.00', '1st fmtPrinciple');
+		equal(model.results()[0].typeName, 'Purchase', '1st typeName');
+		equal(model.results()[1].fmtUnitPrice, '$1.23', '2nd fmtUnitPrice');
+		equal(model.results()[1].fmtQuantity, '2.3457', '2nd fmtQuantity');
+		equal(model.results()[1].fmtTotal, '$3.46', '2nd fmtTotal');
+		equal(model.results()[1].fmtPrinciple, '$4.57', '2nd fmtPrinciple');
+		equal(model.results()[1].typeName, 'Sell', '2nd typeName');
+	});
+
 	asyncTest('search', function () {
+		var transaction = {
+			account:    {name: 'Account 1'},
+			investment: {name: 'Inv 1', symbol: 'SYM1'},
+			unitPrice:  1,
+			quantity:   2,
+			total:      3,
+			principle:  4,
+			type:       'B'
+		};
+
 		$.mockjax({
 			url:          config.url.transactionList,
 			type:         'GET',
@@ -40,9 +91,9 @@ require([
 			responseText: JSON.stringify({
 				url:          {next: '/transaction/next'},
 				transactions: [
-					{url: {self: '/transaction/1'}},
-					{url: {self: '/transaction/2'}},
-					{url: {self: '/transaction/3'}}
+					$.extend({url: {self: '/transaction/1'}}, transaction),
+					$.extend({url: {self: '/transaction/2'}}, transaction),
+					$.extend({url: {self: '/transaction/3'}}, transaction)
 				]
 			})
 		});
@@ -61,8 +112,8 @@ require([
 				this.responseText = JSON.stringify({
 					url:          {next: '/transaction/next-with-params'},
 					transactions: [
-						{url: {self: '/transaction/4'}},
-						{url: {self: '/transaction/5'}}
+						$.extend({url: {self: '/transaction/4'}}, transaction),
+						$.extend({url: {self: '/transaction/5'}}, transaction)
 					]
 				});
 			}
@@ -93,6 +144,16 @@ require([
 	});
 
 	asyncTest('next', function () {
+		var transaction = {
+			account:    {name: 'Account 1'},
+			investment: {name: 'Inv 1', symbol: 'SYM1'},
+			unitPrice:  1,
+			quantity:   2,
+			total:      3,
+			principle:  4,
+			type:       'B'
+		};
+
 		$.mockjax({
 			url:          config.url.transactionList,
 			type:         'GET',
@@ -101,9 +162,9 @@ require([
 			responseText: JSON.stringify({
 				url:          {next: '/transaction/next'},
 				transactions: [
-					{url: {self: '/transaction/1'}},
-					{url: {self: '/transaction/2'}},
-					{url: {self: '/transaction/3'}}
+					$.extend({url: {self: '/transaction/1'}}, transaction),
+					$.extend({url: {self: '/transaction/2'}}, transaction),
+					$.extend({url: {self: '/transaction/3'}}, transaction)
 				]
 			})
 		});
@@ -116,8 +177,8 @@ require([
 			responseText: JSON.stringify({
 				url:          {next: '/transaction/more-results'},
 				transactions: [
-					{url: {self: '/transaction/4'}},
-					{url: {self: '/transaction/5'}}
+					$.extend({url: {self: '/transaction/4'}}, transaction),
+					$.extend({url: {self: '/transaction/5'}}, transaction)
 				]
 			})
 		});
