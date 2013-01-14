@@ -5,9 +5,11 @@ define([
 ], function ($, ko) {
 
 	ko.bindingHandlers.bsTypeahead = {
-		init: function (elem, value) {
+		init: function (elem, value, allBindings, model) {
 			$(elem).typeahead({
-				source: value()
+				source: function () {
+					return value().apply(model, arguments);
+				}
 			});
 		}
 	};

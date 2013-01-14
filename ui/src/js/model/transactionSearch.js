@@ -18,7 +18,7 @@ define([
 	transactionTypes.unshift({id: '', desc: i18n.transactionMenu.type});
 
 	return common.bless(app.BaseModel, 'model.TransactionSearch', {
-		constructor: function (args) {
+		constructor:    function (args) {
 			this._super(args);
 			this.addUri = new URI(config.url.transactionAdd);
 			this.types = transactionTypes;
@@ -31,21 +31,14 @@ define([
 			};
 			this.moreResults = new URI();
 			this.results = ko.observableArray();
-			var self = this;
-			this.findAccount = function (searchParam, callback) {
-				self._typeahead(config.url.accountList, searchParam, 'accounts', callback);
-			};
-			this.findInvestment = function (searchParam, callback) {
-				self._typeahead(config.url.investmentList, searchParam, 'investments', callback);
-			};
 		},
-		reset:       function () {
+		reset:          function () {
 			var self = this;
 			$.each(this.searchParams, function (key) {
 				self.searchParams[key]('');
 			});
 		},
-		search:      function () {
+		search:         function () {
 			var params = {};
 			var hasParams = false;
 			$.each(this.searchParams, function (key, param) {
@@ -62,10 +55,10 @@ define([
 			this.results([]);
 			this._loadData(url);
 		},
-		next:        function () {
+		next:           function () {
 			this._loadData(this.moreResults.url());
 		},
-		_loadData:   function (url) {
+		_loadData:      function (url) {
 			if (url) {
 				this._setBusy(true);
 				$.ajax(url, {
@@ -76,7 +69,7 @@ define([
 				});
 			}
 		},
-		setData:     function (data) {
+		setData:        function (data) {
 			var self = this;
 			if (data.url) {
 				this.moreResults.url(data.url.next);
@@ -93,7 +86,13 @@ define([
 				self.results.push(transaction);
 			});
 		},
-		_typeahead:  function (searchUrl, searchParam, resultKey, callback) {
+		findAccount:    function (searchParam, callback) {
+			this._typeahead(config.url.accountList, searchParam, 'accounts', callback);
+		},
+		findInvestment: function (searchParam, callback) {
+			this._typeahead(config.url.investmentList, searchParam, 'investments', callback);
+		},
+		_typeahead:     function (searchUrl, searchParam, resultKey, callback) {
 			$.ajax(searchUrl, {
 				data:    $.param({name: searchParam}),
 				success: function (data) {
