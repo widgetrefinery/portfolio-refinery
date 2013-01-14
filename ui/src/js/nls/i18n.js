@@ -76,14 +76,16 @@ define({
 			type:       'Type'
 		},
 		transactionSearch: {
-			account:    'Account',
-			date:       'Date',
-			investment: 'Investment',
-			principle:  'Principle',
-			quantity:   'Quantity',
-			total:      'Total',
-			type:       'Type',
-			unitPrice:  'Price'
+			account:        'Account',
+			date:           'Date',
+			investment:     'Investment',
+			loadMore:       'Load more results',
+			loadMoreFailed: 'Failed to get more results',
+			principle:      'Principle',
+			quantity:       'Quantity',
+			total:          'Total',
+			type:           'Type',
+			unitPrice:      'Price'
 		}
 	}
 });

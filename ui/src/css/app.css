@@ -49,3 +49,28 @@
 .table-hover tbody tr:hover td a {
 	visibility: inherit;
 }
+
+.error {
+	color: red;
+}
+
+.infinite-scroll {
+	text-align: center;
+}
+
+.infinite-scroll .error,
+.infinite-scroll img {
+	display: none;
+}
+
+.infinite-scroll.busy img {
+	display: inline;
+}
+
+.infinite-scroll.error span {
+	display: none;
+}
+
+.infinite-scroll.error .error {
+	display: inline;
+}

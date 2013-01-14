@@ -30,6 +30,7 @@ define([
 				type:       ko.observable()
 			};
 			this.moreResults = new URI();
+			this.moreResults.enable = ko.observable(false);
 			this.moreResults.error = ko.observable(false);
 			this.results = ko.observableArray();
 		},
@@ -67,6 +68,12 @@ define([
 		},
 		setData:        function (data) {
 			var self = this;
+			this.moreResults.enable(false);
+			if (data.url) {
+				this.moreResults.url(data.url.next);
+			} else {
+				this.moreResults.url('');
+			}
 			$.each(data.transactions, function (ndx, transaction) {
 				transaction.uri = new URI(transaction.url.self);
 				transaction.fmtUnitPrice = common.currency(transaction.unitPrice);
@@ -76,11 +83,7 @@ define([
 				transaction.typeName = i18n.common.transactionType[transaction.type];
 				self.results.push(transaction);
 			});
-			if (data.url) {
-				this.moreResults.url(data.url.next);
-			} else {
-				this.moreResults.url('');
-			}
+			this.moreResults.enable(this.moreResults.url() ? true : false);
 			this.moreResults.error(false);
 		},
 		findAccount:    function (searchParam, callback) {

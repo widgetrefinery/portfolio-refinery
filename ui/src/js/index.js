@@ -180,7 +180,7 @@ require([
 		return transactions;
 	};
 	$.mockjax({
-		url:         /\/transaction(\?.+)?/,
+		url:         /^\/transaction(\?.+)?$/,
 		type:        'GET',
 		contentType: 'application/json',
 		response:    function () {

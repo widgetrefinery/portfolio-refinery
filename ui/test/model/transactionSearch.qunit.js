@@ -59,6 +59,7 @@ require([
 			]
 		});
 		equal(model.moreResults.url(), '/transaction/next', 'next url');
+		equal(model.moreResults.enable(), true, 'next url enabled');
 		equal(model.results().length, 2, '2 transactions loaded');
 		equal(model.results()[0].fmtUnitPrice, '$1.00', '1st fmtUnitPrice');
 		equal(model.results()[0].fmtQuantity, '2.0000', '1st fmtQuantity');
@@ -70,6 +71,13 @@ require([
 		equal(model.results()[1].fmtTotal, '$3.46', '2nd fmtTotal');
 		equal(model.results()[1].fmtPrinciple, '$4.57', '2nd fmtPrinciple');
 		equal(model.results()[1].typeName, 'Sell', '2nd typeName');
+		model.setData({
+			url:          {},
+			transactions: []
+		});
+		equal(model.moreResults.url(), undefined, 'next url blanked');
+		equal(model.moreResults.enable(), false, 'next url disabled');
+		equal(model.results().length, 2, 'transaction list unmodified');
 	});
 
 	asyncTest('search', function () {
