@@ -183,12 +183,22 @@ require([
 			})
 		});
 
+		$.mockjax({
+			url:          '/transaction/more-results',
+			type:         'GET',
+			responseTime: 0,
+			status:       400
+		});
+
 		var model = new TransactionSearch({existing: true, parentDepth: -1});
 		model.search();
 		setTimeout(part1, ajaxTimeout);
 
 		function part1() {
+			equal(model.moreResults.url(), '/transaction/next', 'more results link remembered');
 			equal(model.results().length, 3, '3 results found');
+			equal(model.moreResults.error(), false, 'error is not set');
+			model.moreResults.error(true);
 			model.next();
 			setTimeout(part2, ajaxTimeout);
 		}
@@ -196,6 +206,15 @@ require([
 		function part2() {
 			equal(model.moreResults.url(), '/transaction/more-results', 'more results link remembered');
 			equal(model.results().length, 5, '5 results total');
+			equal(model.moreResults.error(), false, 'error is not set');
+			model.next();
+			setTimeout(part3, ajaxTimeout);
+		}
+
+		function part3() {
+			equal(model.moreResults.url(), '/transaction/more-results', 'no change to more results link');
+			equal(model.results().length, 5, 'still 5 results total');
+			equal(model.moreResults.error(), true, 'error is set');
 			$.mockjaxClear();
 			start();
 		}

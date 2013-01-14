@@ -4,9 +4,10 @@ define([
 	'jquery.visible'
 ], function ($, ko) {
 
-	var InfiniteScroll = function ($elem, fetchData) {
+	var InfiniteScroll = function ($elem, fetchData, model) {
 		this.__$elem = $elem;
 		this.__fetchData = fetchData;
+		this.__model = model;
 		this.busy(false);
 		this.error(false);
 	};
@@ -42,7 +43,7 @@ define([
 	InfiniteScroll.prototype.fetchData = function () {
 		if (!this.busy() && !this.error() && this.__$elem.visible().length) {
 			this.busy(true);
-			this.__fetchData();
+			this.__fetchData.call(this.__model);
 		}
 	};
 
@@ -55,10 +56,10 @@ define([
 	$(window).resize(windowHandler).scroll(windowHandler);
 
 	ko.bindingHandlers.infiniteScroll = {
-		init:   function (elem, value) {
+		init:   function (elem, value, allBindings, model) {
 			var $elem = $(elem);
 			value = value();
-			tgt = new InfiniteScroll($elem, value.callback);
+			tgt = new InfiniteScroll($elem, value.callback, model);
 			tgt.enable(value.enable());
 		},
 		update: function (elem, value) {

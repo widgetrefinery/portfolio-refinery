@@ -14,6 +14,7 @@ require([
 			enable:   ko.observable(false),
 			error:    ko.observable(false),
 			callback: function () {
+				equal(this, model, 'ensure callback is invoked with the correct context');
 				invoked++;
 			}
 		};

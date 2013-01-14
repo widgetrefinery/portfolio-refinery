@@ -4,16 +4,18 @@ requirejs.config({
 		'i18n':             'lib/require/i18n-2.0.1',
 		'jquery':           'lib/jquery/jquery-1.8.3.min',
 		'jqueryui':         'lib/jquery/jquery-ui-1.9.2',
+		'jquery.mockjax':   '../../test/lib/jquery.mockjax-1.5.1',
+		'jquery.visible':   'contrib/jquery/jquery.visible',
 		'knockout':         'lib/knockout/knockout-2.2.0.min',
 		'knockout.mapping': 'lib/knockout/knockout.mapping-2.3.5.min',
 		'sammy':            'lib/sammy-0.7.2.min',
-		'text':             'lib/require/text-2.0.3',
-		'jquery.mockjax':   '../../test/lib/jquery.mockjax-1.5.1'
+		'text':             'lib/require/text-2.0.3'
 	},
 	shim:  {
 		'bootstrap':      ['jquery'],
-		'sammy':          ['jquery'],
-		'jquery.mockjax': ['jquery']
+		'jquery.mockjax': ['jquery'],
+		'jquery.visible': ['jquery'],
+		'sammy':          ['jquery']
 	}
 });
 require([
@@ -24,6 +26,7 @@ require([
 	'contrib/knockout/bsCollapse',
 	'contrib/knockout/bsToggleBtn',
 	'contrib/knockout/bsTypeahead',
+	'contrib/knockout/infiniteScroll',
 	'contrib/knockout/juDatepicker',
 	'contrib/knockout/toggle',
 	'jquery.mockjax'
@@ -129,62 +132,83 @@ require([
 		type:   'DELETE',
 		status: 204
 	});
+	var generateTransactions = function (size) {
+		var randomInt = function (scale, padding) {
+			var result = '' + Math.floor(Math.random() * scale);
+			while (result.length < padding) {
+				result = '0' + result;
+			}
+			return result;
+		};
+		var randomSymbol = function () {
+			var randomSpace = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+			var result = '';
+			for (var ndx = 0; ndx < 5; ndx++) {
+				result += randomSpace[Math.floor(Math.random() * randomSpace.length)];
+			}
+			return result;
+		};
+		var transactionTypes = $.map(i18n.common.transactionType, function (value, key) {
+			return key;
+		});
+		var transactions = [];
+		for (var ndx = 0; ndx < size; ndx++) {
+			var accountId = randomInt(10, 1);
+			var investmentId = randomInt(10, 1);
+			transactions.push({
+				url:        {self: '/transaction/' + randomInt(100, 1)},
+				ts:         '20' + randomInt(10, 2) + '-' + randomInt(10, 2) + '-' + randomInt(10, 2),
+				account:    {
+					url:  {self: '/account/' + accountId},
+					name: 'Account ' + accountId
+				},
+				investment: {
+					url:    {self: '/investment/' + investmentId},
+					name:   'Investment ' + investmentId,
+					symbol: randomSymbol()
+				},
+				unitPrice:  Math.random() * 100,
+				quantity:   Math.random() * 10,
+				total:      Math.random() * 100,
+				principle:  Math.random() * 100,
+				type:       transactionTypes[Math.floor(Math.random() * transactionTypes.length)]
+			});
+		}
+		transactions.sort(function (a, b) {
+			return a.ts.localeCompare(b.ts);
+		});
+		return transactions;
+	};
 	$.mockjax({
-		url:         '/transaction',
+		url:         /\/transaction(\?.+)?/,
 		type:        'GET',
 		contentType: 'application/json',
 		response:    function () {
-			var randomInt = function (scale, padding) {
-				var result = '' + Math.floor(Math.random() * scale);
-				while (result.length < padding) {
-					result = '0' + result;
-				}
-				return result;
-			};
-			var randomSymbol = function () {
-				var randomSpace = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-				var result = '';
-				for (var ndx = 0; ndx < 5; ndx++) {
-					result += randomSpace[Math.floor(Math.random() * randomSpace.length)];
-				}
-				return result;
-			};
-			var transactionTypes = $.map(i18n.common.transactionType, function (value, key) {
-				return key;
-			});
-			var transactions = [];
-			for (var ndx = 0; ndx < 20; ndx++) {
-				var accountId = randomInt(10, 1);
-				var investmentId = randomInt(10, 1);
-				transactions.push({
-					url:        {self: '/transaction/' + randomInt(100, 1)},
-					ts:         '20' + randomInt(10, 2) + '-' + randomInt(10, 2) + '-' + randomInt(10, 2),
-					account:    {
-						url:  {self: '/account/' + accountId},
-						name: 'Account ' + accountId
-					},
-					investment: {
-						url:    {self: '/investment/' + investmentId},
-						name:   'Investment ' + investmentId,
-						symbol: randomSymbol()
-					},
-					unitPrice:  Math.random() * 100,
-					quantity:   Math.random() * 10,
-					total:      Math.random() * 100,
-					principle:  Math.random() * 100,
-					type:       transactionTypes[Math.floor(Math.random() * transactionTypes.length)]
-				});
-			}
-			transactions.sort(function (a, b) {
-				return a.ts.localeCompare(b.ts);
-			});
 			this.responseText = JSON.stringify({
 				url:          {
 					next: '/transaction/more'
 				},
-				transactions: transactions
+				transactions: generateTransactions(20)
 			});
 		}
+	});
+	$.mockjax({
+		url:         '/transaction/more',
+		type:        'GET',
+		contentType: 'application/json',
+		response:    function () {
+			this.responseText = JSON.stringify({
+				url:          {
+					next: '/transaction/even-more'
+				},
+				transactions: generateTransactions(15)
+			})
+		}
+	});
+	$.mockjax({
+		url:    '/transaction/even-more',
+		type:   'GET',
+		status: 400
 	});
 	router.run();
 });

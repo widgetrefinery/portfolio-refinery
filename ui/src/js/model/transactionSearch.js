@@ -30,6 +30,7 @@ define([
 				type:       ko.observable()
 			};
 			this.moreResults = new URI();
+			this.moreResults.error = ko.observable(false);
 			this.results = ko.observableArray();
 		},
 		reset:          function () {
@@ -60,13 +61,12 @@ define([
 			this.uri.url(this.moreResults.url());
 			this.refresh();
 		},
+		_refreshError:  function (xhr) {
+			this._super(xhr);
+			this.moreResults.error(true);
+		},
 		setData:        function (data) {
 			var self = this;
-			if (data.url) {
-				this.moreResults.url(data.url.next);
-			} else {
-				this.moreResults.url('');
-			}
 			$.each(data.transactions, function (ndx, transaction) {
 				transaction.uri = new URI(transaction.url.self);
 				transaction.fmtUnitPrice = common.currency(transaction.unitPrice);
@@ -76,6 +76,12 @@ define([
 				transaction.typeName = i18n.common.transactionType[transaction.type];
 				self.results.push(transaction);
 			});
+			if (data.url) {
+				this.moreResults.url(data.url.next);
+			} else {
+				this.moreResults.url('');
+			}
+			this.moreResults.error(false);
 		},
 		findAccount:    function (searchParam, callback) {
 			this._typeahead(config.url.accountList, searchParam, 'accounts', callback);
