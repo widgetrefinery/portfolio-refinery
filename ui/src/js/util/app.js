@@ -45,8 +45,8 @@ define([
 		_ajaxComplete: function () {
 			this._setBusy(false);
 		},
-		_ajaxError:    function (xhr) {
-			eventBus.fire('error', {response: xhr});
+		_ajaxError:    function (xhr, src) {
+			eventBus.fire('error', {obj: this, response: xhr, src: src});
 		},
 		refresh:       function () {
 			if (this.existing()) {
@@ -54,10 +54,13 @@ define([
 				$.ajax(this.uri.url(), {
 					context:  this,
 					complete: this._ajaxComplete,
-					error:    this._ajaxError,
+					error:    this._refreshError,
 					success:  this.setData
 				});
 			}
+		},
+		_refreshError: function (xhr) {
+			this._ajaxError(xhr, 'refresh');
 		},
 		save:          function () {
 			var data = this.getData();
@@ -85,7 +88,7 @@ define([
 				this.uri.url(xhr.getResponseHeader('location'));
 				this._saveSuccess();
 			} else {
-				this._ajaxError(xhr);
+				this._ajaxError(xhr, 'save');
 			}
 		},
 		del:           function () {
@@ -95,7 +98,7 @@ define([
 					context:  this,
 					type:     'DELETE',
 					complete: this._ajaxComplete,
-					error:    this._ajaxError,
+					error:    this._delError,
 					success:  this._delSuccess
 				});
 			} else {
@@ -104,6 +107,9 @@ define([
 		},
 		_delSuccess:   function () {
 			this._goToParent();
+		},
+		_delError:     function (xhr) {
+			this._ajaxError(xhr, 'del');
 		},
 		cancel:        function () {
 			this._goToParent();

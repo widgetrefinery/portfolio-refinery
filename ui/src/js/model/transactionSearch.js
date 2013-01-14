@@ -52,22 +52,13 @@ define([
 			if (hasParams) {
 				url = url + '?' + $.param(params);
 			}
+			this.uri.url(url);
 			this.results([]);
-			this._loadData(url);
+			this.refresh();
 		},
 		next:           function () {
-			this._loadData(this.moreResults.url());
-		},
-		_loadData:      function (url) {
-			if (url) {
-				this._setBusy(true);
-				$.ajax(url, {
-					context:  this,
-					complete: this._ajaxComplete,
-					error:    this._ajaxError,
-					success:  this.setData
-				});
-			}
+			this.uri.url(this.moreResults.url());
+			this.refresh();
 		},
 		setData:        function (data) {
 			var self = this;

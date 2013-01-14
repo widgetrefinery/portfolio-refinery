@@ -10,14 +10,14 @@ require([
 	module('model/transactionSearch');
 
 	test('types', function () {
-		var model = new TransactionSearch({});
+		var model = new TransactionSearch({existing: true, parentDepth: -1});
 		deepEqual(model.types[1], {id: 'D', desc: 'Dividend'}, 'transaction type 1');
 		deepEqual(model.types[2], {id: 'B', desc: 'Purchase'}, 'transaction type 2');
 		deepEqual(model.types[5], {id: 'T', desc: 'Transfer'}, 'transaction type 5');
 	});
 
 	test('reset', function () {
-		var model = new TransactionSearch({});
+		var model = new TransactionSearch({existing: true, parentDepth: -1});
 		model.searchParams.startDate('2001-02-03');
 		model.searchParams.endDate('2004-05-06');
 		model.searchParams.account('account name');
@@ -32,7 +32,7 @@ require([
 	});
 
 	test('setData', function () {
-		var model = new TransactionSearch({});
+		var model = new TransactionSearch({existing: true, parentDepth: -1});
 		model.setData({
 			url:          {next: '/transaction/next'},
 			transactions: [
@@ -119,7 +119,7 @@ require([
 			}
 		});
 
-		var model = new TransactionSearch({});
+		var model = new TransactionSearch({existing: true, parentDepth: -1});
 		model.search();
 		setTimeout(part1, ajaxTimeout);
 
@@ -183,7 +183,7 @@ require([
 			})
 		});
 
-		var model = new TransactionSearch({});
+		var model = new TransactionSearch({existing: true, parentDepth: -1});
 		model.search();
 		setTimeout(part1, ajaxTimeout);
 
@@ -218,7 +218,7 @@ require([
 		});
 
 		var searchResults = [];
-		var model = new TransactionSearch({});
+		var model = new TransactionSearch({existing: true, parentDepth: -1});
 		model.findAccount('query', function (data) {
 			searchResults = data;
 		});
@@ -251,7 +251,7 @@ require([
 		});
 
 		var searchResults = [];
-		var model = new TransactionSearch({});
+		var model = new TransactionSearch({existing: true, parentDepth: -1});
 		model.findInvestment('query', function (data) {
 			searchResults = data;
 		});

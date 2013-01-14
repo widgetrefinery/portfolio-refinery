@@ -11,7 +11,7 @@ require([
 		//setup
 		var $html = $(html).hide().appendTo($('body'));
 		var searchInvoked = false;
-		var model = new TransactionSearch({});
+		var model = new TransactionSearch({existing: true, parentDepth: -1});
 		model.search = function () {
 			//intercept and log calls to search()
 			searchInvoked = true;

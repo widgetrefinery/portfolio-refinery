@@ -197,8 +197,10 @@ require([
 			if (testCases[0].error) {
 				deepEqual(events[0], ['busy', true], 'checking fired event 0');
 				equal(events[1][0], 'error', 'checking fired event 1');
-				equal(events[1][1].response.status, 401, 'checking fired event 1');
-				equal(events[1][1].response.statusText, 'fake error', 'checking fired event 1');
+				equal(events[1][1].obj, testModel, 'checking model');
+				equal(events[1][1].response.status, 401, 'checking response status');
+				equal(events[1][1].response.statusText, 'fake error', 'checking response text');
+				equal(events[1][1].src, testCases[0].op, 'checking error source');
 				deepEqual(events[2], ['busy', false], 'checking fired event 2');
 			} else {
 				deepEqual(events, [

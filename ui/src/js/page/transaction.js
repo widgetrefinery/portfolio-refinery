@@ -11,12 +11,12 @@ define([
 
 	return common.bless(Parent, 'page.Transaction', {
 		setLeft:   function (prevPage, $container) {
-			var transactionSearch = this._addModel(prevPage, TransactionSearch, {});
+			var transactionSearch = this._addModel(prevPage, TransactionSearch, {existing: true, parentDepth: -1});
 			var $transactionMenuHtml = $(transactionMenuHtml).appendTo($container);
 			transactionSearch.bind($transactionMenuHtml);
 		},
 		setCenter: function (prevPage, $container) {
-			var transactionSearch = this._addModel(prevPage, TransactionSearch, {});
+			var transactionSearch = this._addModel(prevPage, TransactionSearch, {existing: true, parentDepth: -1});
 			var $transactionSearchHtml = $(transactionSearchHtml).appendTo($container);
 			transactionSearch.bind($transactionSearchHtml);
 		}
