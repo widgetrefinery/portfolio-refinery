@@ -1,12 +1,12 @@
 require([
 	'jquery',
 	'knockout',
-	'binding/bsCollapse'
+	'contrib/knockout/bsCollapse'
 ], function ($, ko) {
 
-	module('binding/bsCollapse');
+	module('contrib/knockout');
 
-	test('binding', function () {
+	test('bsCollapse', function () {
 		//disable animated transitions; these only work when the bootstrap css is installed
 		var transitionBak = $.support.transition;
 		$.support.transition = undefined;

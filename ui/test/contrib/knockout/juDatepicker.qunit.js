@@ -1,12 +1,12 @@
 require([
 	'jquery',
 	'knockout',
-	'binding/juDatepicker'
+	'contrib/knockout/juDatepicker'
 ], function ($, ko) {
 
-	module('binding/juDatepicker');
+	module('contrib/knockout');
 
-	test('binding', function () {
+	test('juDatepicker', function () {
 		//setup
 		var $root = $('<input data-bind="juDatepicker:{value:state}"/>');
 		$root.hide().appendTo($('body'));

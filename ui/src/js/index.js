@@ -21,11 +21,11 @@ require([
 	'router',
 	'i18n!nls/i18n',
 	'bootstrap',
-	'binding/bsCollapse',
-	'binding/bsToggleBtn',
-	'binding/bsTypeahead',
-	'binding/juDatepicker',
-	'binding/toggle',
+	'contrib/knockout/bsCollapse',
+	'contrib/knockout/bsToggleBtn',
+	'contrib/knockout/bsTypeahead',
+	'contrib/knockout/juDatepicker',
+	'contrib/knockout/toggle',
 	'jquery.mockjax'
 ], function ($, router, i18n) {
 	$.ajaxSetup({

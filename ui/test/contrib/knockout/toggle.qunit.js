@@ -1,12 +1,12 @@
 require([
 	'jquery',
 	'knockout',
-	'binding/toggle'
+	'contrib/knockout/toggle'
 ], function ($, ko) {
 
-	module('binding/toggle');
+	module('contrib/knockout');
 
-	test('binding', function () {
+	test('toggle', function () {
 		var $root = $('<div data-bind="toggle:state">').hide().appendTo($('body'));
 		var model = {state: ko.observable(false)};
 		ko.applyBindings(model, $root[0]);

@@ -1,12 +1,12 @@
 require([
 	'jquery',
 	'knockout',
-	'binding/bsTypeahead'
+	'contrib/knockout/bsTypeahead'
 ], function ($, ko) {
 
-	module('binding/bsTypeahead');
+	module('contrib/knockout');
 
-	test('binding', function () {
+	test('bsTypeahead', function () {
 		//setup
 		var searchData = undefined;
 		var $root = $('<input data-bind="bsTypeahead:search"/>');
