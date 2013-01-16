@@ -26,7 +26,7 @@
 	</tr>
 	</tbody>
 </table>
-<div class="infinite-scroll well well-small" data-bind="infiniteScroll:{enable:moreResults.enable,error:moreResults.error,callback:next}">
+<div class="infinite-scroll well well-small" data-bind="infiniteScroll:{state:moreResults.state,callback:next}">
 	<img src="img/ajaxload.gif">
 	<span data-bind="text:i18n.transactionSearch.loadMore"></span>
 	<span class="error" data-bind="text:i18n.transactionSearch.loadMoreFailed"></span>

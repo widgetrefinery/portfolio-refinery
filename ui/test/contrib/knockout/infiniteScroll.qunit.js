@@ -2,71 +2,78 @@ require([
 	'jquery',
 	'knockout',
 	'contrib/knockout/infiniteScroll'
-], function ($, ko) {
+], function ($, ko, infiniteScroll) {
 
 	module('contrib/knockout');
 
 	test('infiniteScroll', function () {
 		//setup
-		var $root = $('<div style="position:fixed;top:0;left:0" data-bind="infiniteScroll:{enable:enable,error:error,callback:callback}">X</div>').appendTo($('body'));
+		var $root = $('<div style="position:fixed;top:0;left:0" data-bind="infiniteScroll:{state:state,callback:callback}">X</div>').appendTo($('body'));
 		var invoked = 0;
 		var model = {
-			enable:   ko.observable(false),
-			error:    ko.observable(false),
-			callback: function () {
+			state:   ko.observable(infiniteScroll.DISABLED),
+			callback:function () {
 				equal(this, model, 'ensure callback is invoked with the correct context');
 				invoked++;
 			}
 		};
 		ko.applyBindings(model, $root[0]);
 		//test binding
-		equal(invoked, 0, 'invoked 0 times after setup');
-		equal($root.hasClass('busy'), false, 'dom is not marked as busy');
-		equal($root.hasClass('error'), false, 'dom is not marked as error');
-		model.enable(true);
-		equal(invoked, 1, 'invoked 1 time after enabling');
-		equal($root.hasClass('busy'), true, 'dom is marked as busy');
-		equal($root.hasClass('error'), false, 'dom is not marked as error');
-		model.error(true);
-		equal(invoked, 1, 'invoked 1 time after setting error');
-		equal($root.hasClass('busy'), false, 'dom is not marked as busy');
-		equal($root.hasClass('error'), true, 'dom is marked as error');
+		check(0, 'invoked 0 times after setup', false, false, false);
+		model.state(infiniteScroll.READY);
+		check(1, 'invoked 1 time after setting state to ready', true, true, false);
+		model.state(infiniteScroll.ERROR);
+		check(0, 'invoked 0 times after setting state to error', true, false, true);
+		model.state(infiniteScroll.BUSY);
+		check(0, 'invoked 0 times after setting state to busy', true, true, false);
 		$root.css('top', '101%');
-		model.error(false);
-		equal(invoked, 1, 'invoked 1 time after clearing error and moving off screen');
-		equal($root.hasClass('busy'), false, 'dom is not marked as busy');
-		equal($root.hasClass('error'), false, 'dom is not marked as error');
+		model.state(infiniteScroll.READY);
+		quickCheck(0, 'invoked 0 times after setting state to ready and moving off screen');
 		$root.css('top', '50%');
 		$(window).trigger('scroll');
-		equal(invoked, 2, 'invoked 2 times after triggering scroll event');
-		equal($root.hasClass('busy'), true, 'dom is marked as busy');
-		equal($root.hasClass('error'), false, 'dom is not marked as error');
+		quickCheck(1, 'invoked 1 time after triggering scroll event');
 		$(window).trigger('scroll');
-		equal(invoked, 2, 'invoked 2 times after triggering scroll event again');
-		equal($root.hasClass('busy'), true, 'dom is marked as busy');
-		equal($root.hasClass('error'), false, 'dom is not marked as error');
-		$root.css('top', '101%');
-		model.enable(false);
-		model.enable(true);
-		equal(invoked, 2, 'invoked 2 times after toggling enable');
-		equal($root.hasClass('busy'), false, 'dom is not marked as busy');
-		equal($root.hasClass('error'), false, 'dom is not marked as error');
-		$root.css('top', '50%');
+		quickCheck(0, 'invoked 0 times after triggering scroll event again');
+		resetState(infiniteScroll.READY);
 		$(window).trigger('resize');
-		equal(invoked, 3, 'invoked 3 times after triggering resize event');
-		equal($root.hasClass('busy'), true, 'dom is marked as busy');
-		equal($root.hasClass('error'), false, 'dom is not marked as error');
+		quickCheck(1, 'invoked 1 time after triggering resize event');
 		$(window).trigger('resize');
-		equal(invoked, 3, 'invoked 3 times after triggering resize event again');
-		equal($root.hasClass('busy'), true, 'dom is marked as busy');
-		equal($root.hasClass('error'), false, 'dom is not marked as error');
-		model.enable(false);
-		model.enable(true);
-		equal(invoked, 4, 'invoked 4 times after toggling enable');
-		equal($root.hasClass('busy'), true, 'dom is marked as busy');
-		equal($root.hasClass('error'), false, 'dom is not marked as error');
+		quickCheck(0, 'invoked 0 times after triggering resize event again');
+		resetState(infiniteScroll.READY);
+		$root.trigger('click');
+		quickCheck(1, 'invoked 1 time after triggering click event');
+		$root.trigger('click');
+		quickCheck(0, 'invoked 0 times after triggering click event again');
+		resetState(infiniteScroll.ERROR);
+		$root.trigger('click');
+		quickCheck(1, 'invoked 1 time after triggering click event in the error state');
+		resetState(infiniteScroll.BUSY);
+		$root.trigger('click');
+		quickCheck(0, 'invoked 0 times after triggering click event in the busy state');
 		//cleanup
 		$root.remove();
+
+		function check(invokeCount, msg, visible, busy, error) {
+			equal(invoked, invokeCount, msg);
+			equal($root.is(':visible'), visible, 'check visibility');
+			equal($root.hasClass('busy'), busy, 'check busy class');
+			equal($root.hasClass('error'), error, 'check error class');
+			invoked = 0;
+		}
+
+		function quickCheck(invokeCount, msg) {
+			equal(invoked, invokeCount, msg);
+			invoked = 0;
+		}
+
+		function resetState(state) {
+			var curInvoked = invoked;
+			$root.css('top', '101%');
+			model.state(undefined);
+			model.state(state);
+			$root.css('top', '50%');
+			equal(invoked, curInvoked, 'reset state to ' + state);
+		}
 	});
 
 });

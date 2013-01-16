@@ -55,6 +55,7 @@
 }
 
 .infinite-scroll {
+	cursor: pointer;
 	text-align: center;
 }
 

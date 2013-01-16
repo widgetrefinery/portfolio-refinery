@@ -4,45 +4,43 @@ define([
 	'jquery.visible'
 ], function ($, ko) {
 
+	var states = {
+		BUSY:     'busy',
+		DISABLED: 'disabled',
+		ERROR:    'error',
+		READY:    'ready'
+	};
+
 	var InfiniteScroll = function ($elem, fetchData, model) {
 		this.__$elem = $elem;
 		this.__fetchData = fetchData;
 		this.__model = model;
-		this.busy(false);
-		this.error(false);
+		this.state(states.DISABLED);
 	};
-	InfiniteScroll.prototype.busy = function (busy) {
-		if (arguments.length) {
-			if (busy) {
+	InfiniteScroll.prototype.state = function (state) {
+		if (arguments.length && this.__state != state) {
+			this.__state = state;
+			if (states.BUSY == state) {
 				this.__$elem.addClass('busy');
 			} else {
 				this.__$elem.removeClass('busy');
 			}
-		}
-		return this.__$elem.hasClass('busy');
-	};
-	InfiniteScroll.prototype.error = function (error) {
-		if (arguments.length) {
-			if (error) {
+			if (states.ERROR == state) {
 				this.__$elem.addClass('error');
 			} else {
 				this.__$elem.removeClass('error');
 			}
-		}
-		return this.__$elem.hasClass('error');
-	};
-	InfiniteScroll.prototype.enable = function (enable) {
-		if (arguments.length) {
-			if (enable) {
-				this.__$elem.show();
-			} else {
+			if (states.DISABLED == state) {
 				this.__$elem.hide();
+			} else {
+				this.__$elem.show();
 			}
 		}
+		return this.__state;
 	};
 	InfiniteScroll.prototype.fetchData = function () {
-		if (!this.busy() && !this.error() && this.__$elem.visible().length) {
-			this.busy(true);
+		if (states.READY == this.state() && this.__$elem.visible().length) {
+			this.state(states.BUSY);
 			this.__fetchData.call(this.__model);
 		}
 	};
@@ -60,15 +58,19 @@ define([
 			var $elem = $(elem);
 			value = value();
 			tgt = new InfiniteScroll($elem, value.callback, model);
-			tgt.enable(value.enable());
+			$elem.click(function () {
+				if (states.ERROR == tgt.state()) {
+					tgt.state(states.READY);
+				}
+				tgt.fetchData();
+			});
 		},
 		update: function (elem, value) {
-			value = value();
-			tgt.busy(false);
-			tgt.error(value.error());
-			tgt.enable(value.enable());
+			tgt.state(value().state());
 			tgt.fetchData();
 		}
 	};
+
+	return states;
 
 });

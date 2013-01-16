@@ -1,9 +1,10 @@
 require([
 	'jquery',
+	'contrib/knockout/infiniteScroll',
 	'model/transactionSearch',
 	'util/config',
 	'jquery.mockjax'
-], function ($, TransactionSearch, config) {
+], function ($, infiniteScroll, TransactionSearch, config) {
 
 	var ajaxTimeout = 50;
 
@@ -58,8 +59,8 @@ require([
 				}
 			]
 		});
-		equal(model.moreResults.url(), '/transaction/next', 'next url');
-		equal(model.moreResults.enable(), true, 'next url enabled');
+		equal(model.moreResults.url(), '/transaction/next', 'more results url');
+		equal(model.moreResults.state(), infiniteScroll.READY, 'more results state is ready');
 		equal(model.results().length, 2, '2 transactions loaded');
 		equal(model.results()[0].fmtUnitPrice, '$1.00', '1st fmtUnitPrice');
 		equal(model.results()[0].fmtQuantity, '2.0000', '1st fmtQuantity');
@@ -75,8 +76,8 @@ require([
 			url:          {},
 			transactions: []
 		});
-		equal(model.moreResults.url(), undefined, 'next url blanked');
-		equal(model.moreResults.enable(), false, 'next url disabled');
+		equal(model.moreResults.url(), undefined, 'more results url blanked');
+		equal(model.moreResults.state(), infiniteScroll.DISABLED, 'more results state is disabled');
 		equal(model.results().length, 2, 'transaction list unmodified');
 	});
 
@@ -132,7 +133,7 @@ require([
 		setTimeout(part1, ajaxTimeout);
 
 		function part1() {
-			equal(model.moreResults.url(), '/transaction/next', 'more results link remembered');
+			equal(model.moreResults.url(), '/transaction/next', 'more results url remembered');
 			equal(model.results().length, 3, '3 results found');
 			model.searchParams.startDate('2001-02-03');
 			model.searchParams.endDate('2004-05-06');
@@ -144,7 +145,7 @@ require([
 		}
 
 		function part2() {
-			equal(model.moreResults.url(), '/transaction/next-with-params', 'more results link remembered');
+			equal(model.moreResults.url(), '/transaction/next-with-params', 'more results url remembered');
 			equal(model.results().length, 2, '2 results found');
 			$.mockjaxClear();
 			start();
@@ -203,26 +204,25 @@ require([
 		setTimeout(part1, ajaxTimeout);
 
 		function part1() {
-			equal(model.moreResults.url(), '/transaction/next', 'more results link remembered');
+			equal(model.moreResults.url(), '/transaction/next', 'more results url remembered');
 			equal(model.results().length, 3, '3 results found');
-			equal(model.moreResults.error(), false, 'error is not set');
-			model.moreResults.error(true);
+			equal(model.moreResults.state(), infiniteScroll.READY, 'more results state is ready');
 			model.next();
 			setTimeout(part2, ajaxTimeout);
 		}
 
 		function part2() {
-			equal(model.moreResults.url(), '/transaction/more-results', 'more results link remembered');
+			equal(model.moreResults.url(), '/transaction/more-results', 'more results url remembered');
 			equal(model.results().length, 5, '5 results total');
-			equal(model.moreResults.error(), false, 'error is not set');
+			equal(model.moreResults.state(), infiniteScroll.READY, 'more results state is ready');
 			model.next();
 			setTimeout(part3, ajaxTimeout);
 		}
 
 		function part3() {
-			equal(model.moreResults.url(), '/transaction/more-results', 'no change to more results link');
+			equal(model.moreResults.url(), '/transaction/more-results', 'no change to more results url');
 			equal(model.results().length, 5, 'still 5 results total');
-			equal(model.moreResults.error(), true, 'error is set');
+			equal(model.moreResults.state(), infiniteScroll.ERROR, 'more results state is error');
 			$.mockjaxClear();
 			start();
 		}

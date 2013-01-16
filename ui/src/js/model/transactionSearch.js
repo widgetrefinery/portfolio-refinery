@@ -1,13 +1,14 @@
 define([
 	'jquery',
 	'knockout',
+	'contrib/knockout/infiniteScroll',
 	'i18n!nls/i18n',
 	'model/list',
 	'util/app',
 	'util/common',
 	'util/config',
 	'util/uri'
-], function ($, ko, i18n, List, app, common, config, URI) {
+], function ($, ko, infiniteScroll, i18n, List, app, common, config, URI) {
 
 	var transactionTypes = $.map(i18n.common.transactionType, function (value, key) {
 		return {id: key, desc: value};
@@ -30,8 +31,7 @@ define([
 				type:       ko.observable()
 			};
 			this.moreResults = new URI();
-			this.moreResults.enable = ko.observable(false);
-			this.moreResults.error = ko.observable(false);
+			this.moreResults.state = ko.observable(infiniteScroll.DISABLED);
 			this.results = ko.observableArray();
 		},
 		reset:          function () {
@@ -62,13 +62,16 @@ define([
 			this.uri.url(this.moreResults.url());
 			this.refresh();
 		},
+		refresh:        function () {
+			this.moreResults.state(infiniteScroll.BUSY);
+			this._super();
+		},
 		_refreshError:  function (xhr) {
 			this._super(xhr);
-			this.moreResults.error(true);
+			this.moreResults.state(infiniteScroll.ERROR);
 		},
 		setData:        function (data) {
 			var self = this;
-			this.moreResults.enable(false);
 			if (data.url) {
 				this.moreResults.url(data.url.next);
 			} else {
@@ -83,8 +86,7 @@ define([
 				transaction.typeName = i18n.common.transactionType[transaction.type];
 				self.results.push(transaction);
 			});
-			this.moreResults.enable(this.moreResults.url() ? true : false);
-			this.moreResults.error(false);
+			this.moreResults.state(this.moreResults.url() ? infiniteScroll.READY : infiniteScroll.DISABLED);
 		},
 		findAccount:    function (searchParam, callback) {
 			this._typeahead(config.url.accountList, searchParam, 'accounts', callback);
