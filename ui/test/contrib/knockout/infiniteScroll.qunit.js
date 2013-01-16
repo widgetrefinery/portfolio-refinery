@@ -1,4 +1,4 @@
-require([
+define([
 	'jquery',
 	'knockout',
 	'contrib/knockout/infiniteScroll'

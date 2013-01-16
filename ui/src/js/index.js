@@ -3,18 +3,23 @@ requirejs.config({
 		'bootstrap':        'lib/bootstrap-2.2.2.min',
 		'i18n':             'lib/require/i18n-2.0.1',
 		'jquery':           'lib/jquery/jquery-1.8.3.min',
-		'jqueryui':         'lib/jquery/jquery-ui-1.9.2',
 		'jquery.mockjax':   '../../test/lib/jquery.mockjax-1.5.1',
 		'jquery.visible':   'contrib/jquery/jquery.visible',
+		'jqueryui':         'lib/jquery/jquery-ui-1.9.2',
 		'knockout':         'lib/knockout/knockout-2.2.0.min',
 		'knockout.mapping': 'lib/knockout/knockout.mapping-2.3.5.min',
 		'sammy':            'lib/sammy-0.7.2.min',
 		'text':             'lib/require/text-2.0.3'
 	},
 	shim:  {
-		'bootstrap':      ['jquery'],
+		// bootstrap and jqueryui both create a $.button() function which
+		// conflicts with each other. I'm specifying jqueryui as a
+		// dependency on bootstrap to load bootstrap after jqueryui since
+		// I'm using bootstrap's version of $.button().
+		'bootstrap':      ['jquery', 'jqueryui'],
 		'jquery.mockjax': ['jquery'],
 		'jquery.visible': ['jquery'],
+		'jqueryui':       ['jquery'],
 		'sammy':          ['jquery']
 	}
 });

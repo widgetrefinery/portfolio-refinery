@@ -1,4 +1,4 @@
-require([
+define([
 	'jquery',
 	'model/investmentList'
 ], function ($, InvestmentList) {

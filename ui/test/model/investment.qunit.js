@@ -1,4 +1,4 @@
-require([
+define([
 	'model/investment'
 ], function (Investment) {
 

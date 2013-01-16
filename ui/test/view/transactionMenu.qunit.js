@@ -1,4 +1,4 @@
-require([
+define([
 	'jquery',
 	'model/transactionSearch',
 	'util/uri',

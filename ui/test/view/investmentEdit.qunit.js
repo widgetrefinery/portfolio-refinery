@@ -1,4 +1,4 @@
-require([
+define([
 	'jquery',
 	'model/investment',
 	'text!view/investmentEdit.html'

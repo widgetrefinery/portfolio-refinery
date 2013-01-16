@@ -1,4 +1,4 @@
-require([
+define([
 	'jquery',
 	'model/accountList',
 	'util/uri',

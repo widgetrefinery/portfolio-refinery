@@ -1,4 +1,4 @@
-require([
+define([
 	'jquery',
 	'page/accountEdit',
 	'page/accountList',

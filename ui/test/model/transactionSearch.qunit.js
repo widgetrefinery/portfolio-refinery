@@ -1,4 +1,4 @@
-require([
+define([
 	'jquery',
 	'contrib/knockout/infiniteScroll',
 	'model/transactionSearch',

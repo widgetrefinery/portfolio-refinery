@@ -1,4 +1,4 @@
-require([
+define([
 	'util/uri'
 ], function (URI) {
 

@@ -1,4 +1,4 @@
-require([
+define([
 	'util/common'
 ], function (common) {
 

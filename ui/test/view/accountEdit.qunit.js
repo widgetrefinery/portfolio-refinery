@@ -1,4 +1,4 @@
-require([
+define([
 	'jquery',
 	'model/account',
 	'text!view/accountEdit.html'
