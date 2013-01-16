@@ -22,12 +22,11 @@
 		<td data-bind="attr:{title:total},text:fmtTotal"></td>
 		<td data-bind="attr:{title:principle},text:fmtPrinciple"></td>
 		<td data-bind="text:typeName"></td>
-		<td><a data-bind="attr:{href:uri.href}"><i class="icon-pencil"></i></a></td>
+		<td><a class="hover" data-bind="attr:{href:uri.href}"><i class="icon-pencil"></i></a></td>
 	</tr>
 	</tbody>
 </table>
 <div class="infinite-scroll well well-small" data-bind="infiniteScroll:{state:moreResults.state,callback:next}">
-	<img src="img/ajaxload.gif">
 	<span data-bind="text:i18n.transactionSearch.loadMore"></span>
 	<span class="error" data-bind="text:i18n.transactionSearch.loadMoreFailed"></span>
 </div>

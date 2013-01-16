@@ -42,11 +42,11 @@
 .ui-widget-shadow { background-image: url(../img/lib/jquery-ui/ui-bg_flat_0_aaaaaa_40x100.png)/*{bgImgUrlShadow}*/; }
 
 /*app styles*/
-.table-hover tbody tr td a {
+.table-hover .hover {
 	visibility: hidden;
 }
 
-.table-hover tbody tr:hover td a {
+.table-hover tr:hover .hover {
 	visibility: inherit;
 }
 
@@ -59,13 +59,14 @@
 	text-align: center;
 }
 
-.infinite-scroll .error,
-.infinite-scroll img {
-	display: none;
+.infinite-scroll.busy:before {
+	content: url(../img/ajaxload.gif);
+	display: inline-block;
+	margin-right: 4px;
 }
 
-.infinite-scroll.busy img {
-	display: inline;
+.infinite-scroll .error {
+	display: none;
 }
 
 .infinite-scroll.error span {
